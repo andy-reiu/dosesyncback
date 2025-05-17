@@ -56,7 +56,7 @@ INSERT INTO dosesync.injection (id, vial_id, injected_timestamp, injected_activi
 INSERT INTO dosesync.injection (id, vial_id, injected_timestamp, injected_activity, injection_volume) VALUES (default, 1, '08:45:00', 175.00, 0.18);
 
 -- Study
-INSERT INTO dosesync.study (id, user_id, date, nr_patients, start_time, end_time, total_activity, comment) VALUES (default, 2, '2025-05-16', 4, '08:30:00', '11:00:00', 480.00, 'Routine diagnostic');
+INSERT INTO dosesync.study (id, user_id, date, nr_patients, start_time, end_time, total_activity, comment, status) VALUES (default, 2, '2025-05-16', 4, '08:30:00', '11:00:00', 480.00, 'Routine diagnostic', 'A');
 
 -- Daily Study
 INSERT INTO dosesync.daily_study (id, study_id, patient_id, vial_id, injection_id, status, created_at, updated_at) VALUES (default, 1, 1, 1, 1, 'A', '2025-05-16 13:17:49.227960', '2025-05-16 13:17:49.227960');

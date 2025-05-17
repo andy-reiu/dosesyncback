@@ -112,6 +112,7 @@ CREATE TABLE study (
                        end_time time  NULL,
                        total_activity decimal(8,2)  NULL,
                        comment varchar(255)  NULL,
+                       status char  NOT NULL,
                        CONSTRAINT study_pk PRIMARY KEY (id)
 );
 
