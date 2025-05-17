@@ -1,7 +1,7 @@
-package ee.bcs.DoseSync.persistence.calculationprofile;
+package ee.bcs.dosesyncback.persistence.calculationprofile;
 
-import ee.bcs.DoseSync.persistence.isotope.Isotope;
-import ee.bcs.DoseSync.persistence.machine.Machine;
+import ee.bcs.dosesyncback.persistence.isotope.Isotope;
+import ee.bcs.dosesyncback.persistence.machine.Machine;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

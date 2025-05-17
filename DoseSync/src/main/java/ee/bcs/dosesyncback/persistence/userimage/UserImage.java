@@ -1,6 +1,6 @@
-package ee.bcs.DoseSync.persistence.userimage;
+package ee.bcs.dosesyncback.persistence.userimage;
 
-import ee.bcs.DoseSync.persistence.profile.Profile;
+import ee.bcs.dosesyncback.persistence.profile.Profile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

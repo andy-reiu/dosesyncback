@@ -1,6 +1,6 @@
-package ee.bcs.DoseSync.persistence.vial;
+package ee.bcs.dosesyncback.persistence.vial;
 
-import ee.bcs.DoseSync.persistence.calculationprofile.CalculationProfile;
+import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -1,10 +1,10 @@
-package ee.bcs.DoseSync.infrastructure;
+package ee.bcs.dosesyncback.infrastructure;
 
-import ee.bcs.DoseSync.infrastructure.error.ApiError;
-import ee.bcs.DoseSync.infrastructure.exception.DataNotFoundException;
-import ee.bcs.DoseSync.infrastructure.exception.ForbiddenException;
-import ee.bcs.DoseSync.infrastructure.exception.ForeignKeyNotFoundException;
-import ee.bcs.DoseSync.infrastructure.exception.PrimaryKeyNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.error.ApiError;
+import ee.bcs.dosesyncback.infrastructure.exception.DataNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
+import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

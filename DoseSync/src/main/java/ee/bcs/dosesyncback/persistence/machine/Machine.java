@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync.persistence.machine;
+package ee.bcs.dosesyncback.persistence.machine;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

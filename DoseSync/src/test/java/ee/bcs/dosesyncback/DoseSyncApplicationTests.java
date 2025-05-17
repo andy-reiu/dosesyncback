@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync;
+package ee.bcs.dosesyncback;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

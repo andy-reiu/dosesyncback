@@ -1,6 +1,6 @@
-package ee.bcs.DoseSync.persistence.user;
+package ee.bcs.dosesyncback.persistence.user;
 
-import ee.bcs.DoseSync.controller.login.dto.LoginResponse;
+import ee.bcs.dosesyncback.controller.login.dto.LoginResponse;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)

@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync.persistence.user;
+package ee.bcs.dosesyncback.persistence.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

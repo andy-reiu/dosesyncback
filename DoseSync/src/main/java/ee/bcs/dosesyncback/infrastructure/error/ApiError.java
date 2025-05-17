@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync.infrastructure.error;
+package ee.bcs.dosesyncback.infrastructure.error;
 
 import lombok.Data;
 

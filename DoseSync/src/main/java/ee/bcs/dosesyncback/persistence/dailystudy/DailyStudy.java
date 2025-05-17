@@ -1,9 +1,9 @@
-package ee.bcs.DoseSync.persistence.dailystudy;
+package ee.bcs.dosesyncback.persistence.dailystudy;
 
-import ee.bcs.DoseSync.persistence.injection.Injection;
-import ee.bcs.DoseSync.persistence.patient.Patient;
-import ee.bcs.DoseSync.persistence.study.Study;
-import ee.bcs.DoseSync.persistence.vial.Vial;
+import ee.bcs.dosesyncback.persistence.injection.Injection;
+import ee.bcs.dosesyncback.persistence.patient.Patient;
+import ee.bcs.dosesyncback.persistence.study.Study;
+import ee.bcs.dosesyncback.persistence.vial.Vial;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

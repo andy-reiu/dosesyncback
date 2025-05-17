@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync;
+package ee.bcs.dosesyncback;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

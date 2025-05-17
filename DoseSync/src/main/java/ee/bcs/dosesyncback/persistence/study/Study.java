@@ -1,6 +1,6 @@
-package ee.bcs.DoseSync.persistence.study;
+package ee.bcs.dosesyncback.persistence.study;
 
-import ee.bcs.DoseSync.persistence.user.User;
+import ee.bcs.dosesyncback.persistence.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

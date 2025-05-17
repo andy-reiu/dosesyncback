@@ -1,6 +1,6 @@
-package ee.bcs.DoseSync.persistence.injection;
+package ee.bcs.dosesyncback.persistence.injection;
 
-import ee.bcs.DoseSync.persistence.vial.Vial;
+import ee.bcs.dosesyncback.persistence.vial.Vial;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

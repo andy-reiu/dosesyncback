@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync.persistence.isotope;
+package ee.bcs.dosesyncback.persistence.isotope;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package ee.bcs.DoseSync.infrastructure.exception;
+package ee.bcs.dosesyncback.infrastructure.exception;
 
 import lombok.Getter;
 
