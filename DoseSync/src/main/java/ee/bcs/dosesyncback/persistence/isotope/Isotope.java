@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.persistence.isotope;
 
+import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,6 +9,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO for {@link IsotopeInfo}
+ */
 @Getter
 @Setter
 @Entity

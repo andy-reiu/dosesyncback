@@ -8,7 +8,7 @@ import ee.bcs.dosesyncback.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static ee.bcs.dosesyncback.AccountStatus.ACTIVE;
+import static ee.bcs.dosesyncback.persistence.user.UserStatus.ACTIVE;
 import static ee.bcs.dosesyncback.infrastructure.Error.INCORRECT_CREDENTIALS;
 
 @Service

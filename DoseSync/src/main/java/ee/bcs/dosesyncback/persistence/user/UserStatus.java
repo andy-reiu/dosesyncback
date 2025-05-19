@@ -1,11 +1,11 @@
-package ee.bcs.dosesyncback;
+package ee.bcs.dosesyncback.persistence.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AccountStatus {
+public enum UserStatus {
     ACTIVE("A"),
     DELETED("B");
     private final String code;
