@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.persistence.calculationprofile;
 
 import ee.bcs.dosesyncback.persistence.isotope.Isotope;
-import ee.bcs.dosesyncback.persistence.machine.Machine;
+import ee.bcs.dosesyncback.persistence.study.Study;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,14 +16,15 @@ import java.time.LocalTime;
 @Table(name = "calculation_profile", schema = "dosesync")
 public class CalculationProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calculation_profile_id_gen")
+    @SequenceGenerator(name = "calculation_profile_id_gen", sequenceName = "calculation_profile_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "machine_id", nullable = false)
-    private Machine machine;
+    @JoinColumn(name = "study_id", nullable = false)
+    private Study study;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,8 +32,8 @@ public class CalculationProfile {
     private Isotope isotope;
 
     @NotNull
-    @Column(name = "activity", nullable = false, precision = 8, scale = 2)
-    private BigDecimal activity;
+    @Column(name = "calibrated_actity", nullable = false, precision = 8, scale = 2)
+    private BigDecimal calibratedActity;
 
     @NotNull
     @Column(name = "calibration_time", nullable = false)
@@ -47,7 +48,7 @@ public class CalculationProfile {
     private Integer activityBeforeFirst;
 
     @NotNull
-    @Column(name = "vial_volume", nullable = false)
-    private Integer vialVolume;
+    @Column(name = "fill_volume", nullable = false)
+    private Integer fillVolume;
 
 }

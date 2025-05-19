@@ -1,10 +1,13 @@
 package ee.bcs.dosesyncback.persistence.injection;
 
-import ee.bcs.dosesyncback.persistence.vial.Vial;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -15,25 +18,24 @@ import java.time.LocalTime;
 @Table(name = "injection", schema = "dosesync")
 public class Injection {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ColumnDefault("nextval('dosesync.injection_id_seq')")
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "vial_id", nullable = false)
-    private Vial vial;
+    @Column(name = "weight", nullable = false, precision = 4, scale = 1)
+    private BigDecimal weight;
 
     @NotNull
-    @Column(name = "injected_timestamp", nullable = false)
-    private LocalTime injectedTimestamp;
+    @Column(name = "mbq_kg", nullable = false, precision = 7, scale = 3)
+    private BigDecimal mbqKg;
+
+    @NotNull
+    @Column(name = "injected_time", nullable = false)
+    private LocalTime injectedTime;
 
     @NotNull
     @Column(name = "injected_activity", nullable = false, precision = 8, scale = 2)
     private BigDecimal injectedActivity;
-
-    @NotNull
-    @Column(name = "injection_volume", nullable = false, precision = 8, scale = 2)
-    private BigDecimal injectionVolume;
 
 }
