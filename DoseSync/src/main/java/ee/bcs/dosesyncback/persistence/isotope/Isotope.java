@@ -36,4 +36,7 @@ public class Isotope {
     @Column(name = "unit", nullable = false, length = 10)
     private String unit;
 
+    @NotNull
+    @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)
+    private String status;
 }

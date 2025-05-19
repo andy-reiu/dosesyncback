@@ -1,9 +1,9 @@
 package ee.bcs.dosesyncback.persistence.dailystudy;
 
 import ee.bcs.dosesyncback.persistence.injection.Injection;
+import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.patient.Patient;
 import ee.bcs.dosesyncback.persistence.study.Study;
-import ee.bcs.dosesyncback.persistence.vial.Vial;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -17,7 +17,8 @@ import java.time.Instant;
 @Table(name = "daily_study", schema = "dosesync")
 public class DailyStudy {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "daily_study_id_gen")
+    @SequenceGenerator(name = "daily_study_id_gen", sequenceName = "daily_study_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -33,13 +34,13 @@ public class DailyStudy {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "vial_id", nullable = false)
-    private Vial vial;
+    @JoinColumn(name = "injection_id", nullable = false)
+    private Injection injection;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "injection_id", nullable = false)
-    private Injection injection;
+    @JoinColumn(name = "machine_fill_id", nullable = false)
+    private MachineFill machineFill;
 
     @NotNull
     @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)

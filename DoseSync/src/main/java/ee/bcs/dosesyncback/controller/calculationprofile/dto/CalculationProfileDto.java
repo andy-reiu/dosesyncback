@@ -1,8 +1,5 @@
 package ee.bcs.dosesyncback.controller.calculationprofile.dto;
 
-import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
-import ee.bcs.dosesyncback.persistence.isotope.Isotope;
-import ee.bcs.dosesyncback.persistence.machine.Machine;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 /**
  * DTO for {@link CalculationProfile}
