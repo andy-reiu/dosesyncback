@@ -22,7 +22,7 @@ CREATE TABLE daily_study (
                              patient_id int  NOT NULL,
                              vial_id int  NOT NULL,
                              injection_id int  NOT NULL,
-                             status char(1)  NOT NULL,
+                             status char  NOT NULL,
                              created_at timestamp  NOT NULL,
                              updated_at timestamp  NOT NULL,
                              CONSTRAINT daily_study_pk PRIMARY KEY (id)
@@ -59,9 +59,11 @@ CREATE TABLE isotope (
 -- Table: machine
 CREATE TABLE machine (
                          id serial  NOT NULL,
+                         hospital_id int  NOT NULL,
                          name varchar(255)  NOT NULL,
                          serial_number varchar(255)  NOT NULL,
                          description varchar(500)  NULL,
+                         status char  NOT NULL,
                          CONSTRAINT serial_number UNIQUE (serial_number) NOT DEFERRABLE  INITIALLY IMMEDIATE,
                          CONSTRAINT machine_pk PRIMARY KEY (id)
 );
@@ -190,6 +192,14 @@ ALTER TABLE daily_study ADD CONSTRAINT daily_studyies_patient
 ALTER TABLE injection ADD CONSTRAINT injection_vial
     FOREIGN KEY (vial_id)
         REFERENCES vial (id)
+        NOT DEFERRABLE
+            INITIALLY IMMEDIATE
+;
+
+-- Reference: machine_hospital (table: machine)
+ALTER TABLE machine ADD CONSTRAINT machine_hospital
+    FOREIGN KEY (hospital_id)
+        REFERENCES hospital (id)
         NOT DEFERRABLE
             INITIALLY IMMEDIATE
 ;
