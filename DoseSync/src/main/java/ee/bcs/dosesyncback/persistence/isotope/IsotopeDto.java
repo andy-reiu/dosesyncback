@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.controller.isotope.dto;
+package ee.bcs.dosesyncback.persistence.isotope;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Data
 public class IsotopeDto {
     private Integer isotopeId;
     private String isotopeName;

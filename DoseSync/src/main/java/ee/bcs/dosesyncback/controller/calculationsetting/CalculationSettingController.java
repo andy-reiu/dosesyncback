@@ -15,7 +15,7 @@ public class CalculationSettingController {
     private final CalculationSettingService calculationSettingService;
 
     // Leida süsteemist kõik valemi osad
-    @GetMapping("/calculationsettings")
+    @GetMapping("/calculation-settings")
     @Operation(
             summary = "Leiab süsteemist(andmebaasist calculationsetting tabelist) kõik vajalikud andmed.",
             description = "Tagastab info koos settingsId, settingMinActiviy, settingMaxActivity, " +
