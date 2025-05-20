@@ -16,12 +16,12 @@ public class IsotopeController {
     private final IsotopeService isotopeService;
 
     //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
-    @GetMapping("/isotopes")
+    @GetMapping("/active-isotopes")
     @Operation(
             summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik isotoobid.",
             description = "Tagastab info koos isotopeId ja isotopeName'ga")
-    public List<IsotopeInfo> getAllIsotopes() {
-        return isotopeService.getAllIsotopes();
+    public List<IsotopeInfo> getAllActiveIsotopes() {
+        return isotopeService.getAllActiveIsotopes();
     }
 
     //todo: Admini menüüsse isotoobi lisamine ja väljade muutmine (kõik väljad: name, half_life_hr, unit)

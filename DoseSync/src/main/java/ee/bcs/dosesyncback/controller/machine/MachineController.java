@@ -16,12 +16,12 @@ public class MachineController {
     private final MachineService machineService;
 
     //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
-    @GetMapping("/machines")
+    @GetMapping("/active-machines")
     @Operation(
             summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik linnad.",
             description = "Tagastab info koos machineId ja machineName'ga")
-    public List<MachineInfo> getAllMachines(){
-        return machineService.getAllMachines();
+    public List<MachineInfo> getAllActiveMachines(){
+        return machineService.getAllActiveMachines();
     }
     //todo: Admini menüüsse masinate lisamine ja väljade 0muutmine (kõik väljad: hospital_id (FK), name, serial_number, description, status)
 }

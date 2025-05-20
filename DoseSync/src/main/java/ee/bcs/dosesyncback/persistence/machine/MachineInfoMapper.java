@@ -6,7 +6,7 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface MachineMapper {
+public interface MachineInfoMapper {
 
     @Mapping(source = "id", target = "machineId")
     @Mapping(source = "name", target = "machineName")

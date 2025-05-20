@@ -12,4 +12,7 @@ public interface StudyRepository extends JpaRepository<Study, Integer> {
 
     @Query("select s from Study s where s.status = :status")
     List<Study> findAllBy(String status);
+
+    @Query("select s from Study s")
+    List<Study> findAll();
 }

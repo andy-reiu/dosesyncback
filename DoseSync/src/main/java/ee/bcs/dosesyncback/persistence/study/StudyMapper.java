@@ -18,6 +18,7 @@ public interface StudyMapper {
     @Mapping(source = "endTime", target = "studyEndTime", qualifiedByName = "timeToString")
     @Mapping(source = "totalActivity", target = "studyTotalActivity")
     @Mapping(source = "comment", target = "studyComment")
+    @Mapping(source = "status", target = "studyStatus")
     @Mapping(source = "calculationMachineRinseVolume", target = "calculationMachineRinseVolume")
     @Mapping(source = "calculationMachineRinseActivity", target = "calculationMachineRinseActivity")
     StudyInfo toStudyInfo(Study study);

@@ -17,8 +17,7 @@ public class IsotopeService {
     private final IsotopeRepository isotopeRepository;
     private final IsotopeInfoMapper isotopeInfoMapper;
 
-    public List<IsotopeInfo> getAllIsotopes() {
-
+    public List<IsotopeInfo> getAllActiveIsotopes() {
         List<Isotope> isotopes = isotopeRepository.findAllBy(IsotopeStatus.ACTIVE.getCode());
         List<IsotopeInfo> isotopeInfos = isotopeInfoMapper.toIsotopeInfos(isotopes);
         return isotopeInfos;

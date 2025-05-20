@@ -14,7 +14,7 @@ public class StudyController {
 
     private final StudyService studyService;
 
-    @GetMapping("study")
+    @GetMapping("/studies")
     public List<StudyInfo> getAllStudies(){
         return studyService.getAllStudies();
     }

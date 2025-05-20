@@ -21,6 +21,8 @@ public class StudyInfo implements Serializable {
     private String studyEndTime;
     private BigDecimal studyTotalActivity;
     private String studyComment;
+    private String studyStatus;
     private Integer calculationMachineRinseVolume;
     private Integer calculationMachineRinseActivity;
+    private String isotopeName;
 }
