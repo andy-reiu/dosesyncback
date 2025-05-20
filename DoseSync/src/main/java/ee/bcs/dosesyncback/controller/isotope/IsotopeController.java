@@ -28,6 +28,7 @@ public class IsotopeController {
         return isotopeService.getAllActiveIsotopes();
     }
 
+    //todo: Admini menüüsse isotoobi lisamine ja väljade muutmine (kõik väljad: name, half_life_hr, unit)
     @GetMapping("/isotopes")
     @Operation(
             summary = "Leiab süsteeemist (admebaasist isotoopide tabelist) kõik isotoobid.",
@@ -37,5 +38,5 @@ public class IsotopeController {
         return isotopeDtos;
     }
 
-    //todo: Admini menüüsse isotoobi lisamine ja väljade muutmine (kõik väljad: name, half_life_hr, unit)
+
 }

@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.controller.machine.dto;
+package ee.bcs.dosesyncback.persistence.machine;
 
 import lombok.*;
 
