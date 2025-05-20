@@ -15,7 +15,7 @@ public class IsotopeController {
 
     private final IsotopeService isotopeService;
 
-    //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
+    //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib. kontrollida, et status oleks õige
     @GetMapping("/isotopes")
     @Operation(
             summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik isotoobid.",

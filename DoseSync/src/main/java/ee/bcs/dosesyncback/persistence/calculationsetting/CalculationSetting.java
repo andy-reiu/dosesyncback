@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.persistence.calculationsettings;
+package ee.bcs.dosesyncback.persistence.calculationsetting;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
