@@ -17,8 +17,7 @@ import java.time.Instant;
 @Table(name = "daily_study", schema = "dosesync")
 public class DailyStudy {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "daily_study_id_gen")
-    @SequenceGenerator(name = "daily_study_id_gen", sequenceName = "daily_study_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

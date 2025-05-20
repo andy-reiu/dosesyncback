@@ -58,8 +58,8 @@ INSERT INTO dosesync.machine_fill (id, injection_id, vial_activity_before_inject
 
 
 -- Study
-INSERT INTO dosesync.study (id, user_id, machine_id, date, nr_patients, start_time, end_time, total_activity, comment, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
-VALUES (default, 2, 1, '2025-05-16', 4, '08:30:00', '11:00:00', 480.00, 'Routine diagnostic', NULL, NULL);
+INSERT INTO dosesync.study (id, user_id, machine_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
+VALUES (default, 2, 1, '2025-05-16', 4, '08:30:00', '11:00:00', 480.00, 'Routine diagnostic', 'A', NULL, NULL);
 
 -- Calculation Profile
 INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_actity, calibration_time, administration_time, activity_before_first, fill_volume)

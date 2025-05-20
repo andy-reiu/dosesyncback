@@ -16,8 +16,7 @@ import java.time.LocalTime;
 @Table(name = "calculation_profile", schema = "dosesync")
 public class CalculationProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calculation_profile_id_gen")
-    @SequenceGenerator(name = "calculation_profile_id_gen", sequenceName = "calculation_profile_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -50,5 +49,4 @@ public class CalculationProfile {
     @NotNull
     @Column(name = "fill_volume", nullable = false)
     private Integer fillVolume;
-
 }

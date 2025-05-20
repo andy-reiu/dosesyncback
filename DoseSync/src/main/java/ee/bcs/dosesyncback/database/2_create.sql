@@ -33,7 +33,7 @@ CREATE TABLE daily_study (
                              patient_id int  NOT NULL,
                              injection_id int  NOT NULL,
                              machine_fill_id int  NOT NULL,
-                             status char(1)  NOT NULL,
+                             status char  NOT NULL,
                              created_at timestamp  NOT NULL,
                              updated_at timestamp  NOT NULL,
                              CONSTRAINT daily_study_pk PRIMARY KEY (id)
@@ -143,6 +143,7 @@ CREATE TABLE study (
                        end_time time  NULL,
                        total_activity decimal(8,2)  NULL,
                        comment varchar(255)  NULL,
+                       status char  NOT NULL,
                        calculation_machine_rinse_volume int  NULL,
                        calculation_machine_rinse_activity int  NULL,
                        CONSTRAINT study_pk PRIMARY KEY (id)
