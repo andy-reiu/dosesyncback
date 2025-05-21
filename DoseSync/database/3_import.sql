@@ -58,21 +58,28 @@ INSERT INTO dosesync.machine_fill (id, injection_id, vial_activity_before_inject
 
 
 -- Study
-INSERT INTO dosesync.study (id, user_id, machine_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
-VALUES (default, 2, 1, '2025-05-16', 4, '08:30:00', '11:00:00', 4800.00, 'Routine diagnostic', 'D', NULL, NULL);
-INSERT INTO dosesync.study (id, user_id, machine_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
-VALUES (default, 3, 1, '2025-04-16', 2, '08:30:00', '21:00:00', 6200.00, 'Andys Study', 'A', 2, 160);
-INSERT INTO dosesync.study (id, user_id, machine_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
-VALUES (default, 3, 1, '2025-06-16', 5, '08:30:00', '20:00:00', 2220.00, 'THIS IS NOT THE DROIDS', 'B', 4, 250);
+INSERT INTO dosesync.study (id, user_id, machine_id, isotope_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
+VALUES (default, 2, 1, 1, '2025-05-16', 4, '08:30:00', '11:00:00', 4800.00, 'Routine diagnostic', 'D', NULL, NULL);
+INSERT INTO dosesync.study (id, user_id, machine_id, isotope_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
+VALUES (default, 3, 1, 1, '2025-04-16', 2, '08:30:00', '21:00:00', 6200.00, 'Andys Study', 'A', 2, 160);
+INSERT INTO dosesync.study (id, user_id, machine_id, isotope_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
+VALUES (default, 3, 1, 1, '2025-06-16', 5, '08:30:00', '20:00:00', 2220.00, 'THIS IS NOT THE DROIDS', 'B', 4, 250);
 
--- Calculation Profile
-INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_actity, calibration_time, administration_time, activity_before_first, fill_volume)
-VALUES (default, 1, 1, 4500.00, '09:30:00', '11:45:00', 1919, 6);
-INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_actity, calibration_time, administration_time, activity_before_first, fill_volume)
-VALUES (default, 2, 2, 6600.00, '09:30:00', '17:45:00', 5000, 23);
-INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_actity, calibration_time, administration_time, activity_before_first, fill_volume)
-VALUES (default, 3, 3, 6600.00, '09:30:00', '13:45:00', 1000, 21);
+-- -- Calculation Profile
+-- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
+-- VALUES (default, 1, 1, 4500.00, '09:30:00', '11:45:00', 1919, 6);
+-- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
+-- VALUES (default, 2, 2, 6600.00, '09:30:00', '17:45:00', 5000, 23);
+-- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
+-- VALUES (default, 3, 3, 6600.00, '09:30:00', '13:45:00', 1000, 21);
 
+-- Calculation Profile (kustutatud activity before)
+INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
+VALUES (default, 1, 1, 4500.00, '09:30:00', '11:45:00', 6);
+INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
+VALUES (default, 2, 2, 6600.00, '09:30:00', '17:45:00', 23);
+INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
+VALUES (default, 3, 3, 6600.00, '09:30:00', '13:45:00', 21);
 
 -- Patient
 INSERT INTO dosesync.patient (id, patient_national_id) VALUES (default, '12345678901');
@@ -81,14 +88,14 @@ INSERT INTO dosesync.patient (id, patient_national_id) VALUES (default, '9876543
 INSERT INTO dosesync.patient (id, patient_national_id) VALUES (default, '98765432102');
 
 -- Daily Study
-INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, status, created_at, updated_at)
-VALUES (default, 1, 1, 1, 1, 'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
-INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, status, created_at, updated_at)
-VALUES (default, 1, 2, 2, 2, 'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
-INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, status, created_at, updated_at)
-VALUES (default, 1, 3, 3, 3, 'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
-INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, status, created_at, updated_at)
-VALUES (default, 1, 4, 4, 4, 'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
+INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, acc, status, created_at, updated_at)
+VALUES (default, 1, 1, 1, 1,'HITK2332310',  'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
+INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, acc, status, created_at, updated_at)
+VALUES (default, 1, 2, 2, 2,'HITK2512320',  'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
+INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, acc, status, created_at, updated_at)
+VALUES (default, 1, 3, 3, 3, 'HITK242320', 'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
+INSERT INTO dosesync.daily_study (id, study_id, patient_id, injection_id, machine_fill_id, acc, status, created_at, updated_at)
+VALUES (default, 1, 4, 4, 4,'HITK242319',  'A', '2025-05-16 13:17:49', '2025-05-16 13:17:49');
 
 -- Machine Fill depending on calculation profile
 INSERT INTO dosesync.machine_fill_calculation_profile (id, machine_fill_id, calculation_profile_id) VALUES (default, 1, 1);

@@ -6,11 +6,11 @@ import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepo
 import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyMapper;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
-import ee.bcs.dosesyncback.persistence.study.StudyStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +25,10 @@ public class StudyService {
         List<StudyInfo> studyInfos = studyMapper.toStudyInfos(studies);
         for (StudyInfo studyInfo : studyInfos) {
             Integer studyId = studyInfo.getStudyId();
-            CalculationProfile calculationProfile = calculationProfileRepository.findBy(studyId);
-            studyInfo.setIsotopeName(calculationProfile.getIsotope().getName());
+            Optional<CalculationProfile> optionalCalculationProfile = calculationProfileRepository.findCalculationProfileBy(studyId);
+            if(optionalCalculationProfile.isPresent()){
+                studyInfo.setIsotopeName(optionalCalculationProfile.get().getIsotope().getName());
+            }
         }
         return studyInfos;
     }

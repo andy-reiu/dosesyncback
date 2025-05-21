@@ -6,6 +6,7 @@ import ee.bcs.dosesyncback.persistence.patient.Patient;
 import ee.bcs.dosesyncback.persistence.study.Study;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,6 +41,11 @@ public class DailyStudy {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "machine_fill_id", nullable = false)
     private MachineFill machineFill;
+
+    @Size(max = 12)
+    @NotNull
+    @Column(name = "acc", nullable = false, length = 12)
+    private String acc;
 
     @NotNull
     @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)

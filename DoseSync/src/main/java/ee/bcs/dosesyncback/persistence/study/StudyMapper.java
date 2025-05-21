@@ -21,6 +21,7 @@ public interface StudyMapper {
     @Mapping(source = "status", target = "studyStatus")
     @Mapping(source = "calculationMachineRinseVolume", target = "calculationMachineRinseVolume")
     @Mapping(source = "calculationMachineRinseActivity", target = "calculationMachineRinseActivity")
+    @Mapping(constant = "", target = "isotopeName")
     StudyInfo toStudyInfo(Study study);
 
     List<StudyInfo> toStudyInfos(List<Study> studies);

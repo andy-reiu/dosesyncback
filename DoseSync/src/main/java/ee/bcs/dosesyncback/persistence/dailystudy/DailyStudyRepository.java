@@ -2,7 +2,6 @@ package ee.bcs.dosesyncback.persistence.dailystudy;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,5 +10,8 @@ import java.util.List;
 public interface DailyStudyRepository extends JpaRepository<DailyStudy, Integer> {
 
     @Query("select d from DailyStudy d where d.status = :status")
-    List<DailyStudy> findAllBy(String status);
+    List<DailyStudy> findStudiesBy(String status);
+
+    @Query("select d from DailyStudy d where d.study.id = :studyId")
+    List<DailyStudy> findStudiesBy(Integer studyId);
 }

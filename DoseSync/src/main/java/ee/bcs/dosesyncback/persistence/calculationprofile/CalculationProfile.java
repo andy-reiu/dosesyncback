@@ -31,8 +31,8 @@ public class CalculationProfile {
     private Isotope isotope;
 
     @NotNull
-    @Column(name = "calibrated_actity", nullable = false, precision = 8, scale = 2)
-    private BigDecimal calibratedActity;
+    @Column(name = "calibrated_activity", nullable = false, precision = 8, scale = 2)
+    private BigDecimal calibratedActivity;
 
     @NotNull
     @Column(name = "calibration_time", nullable = false)
@@ -42,9 +42,9 @@ public class CalculationProfile {
     @Column(name = "administration_time", nullable = false)
     private LocalTime administrationTime;
 
-    @NotNull
-    @Column(name = "activity_before_first", nullable = false)
-    private Integer activityBeforeFirst;
+//    @NotNull
+//    @Column(name = "activity_before_first", nullable = false)
+//    private Integer activityBeforeFirst;
 
     @NotNull
     @Column(name = "fill_volume", nullable = false)
