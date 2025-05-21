@@ -4,10 +4,10 @@ import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSetting;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingDto;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingMapper;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -21,9 +21,17 @@ public class CalculationSettingService {
     public List<CalculationSettingDto> getAllCalculationSettings() {
         //pull all calculationsetting entities
         List<CalculationSetting> calculationSettings = calculationSettingRepository.findAll();
-        //map them them to DTOs(and capture result)
-        List<CalculationSettingDto> calculationSettingDtos = calculationSettingMapper.toCalculationSettings(calculationSettings);
+        //map them to DTOs(and capture result)
+        List<CalculationSettingDto> calculationSettingDtos = calculationSettingMapper.toCalculationSettingDtos(calculationSettings);
 
         return calculationSettingDtos;
+    }
+
+    @Transactional
+    public CalculationSetting addCalculationSetting(CalculationSettingDto calculationSettingDto) {
+
+        CalculationSetting calculateSetting = calculationSettingMapper.toCalculateSetting(calculationSettingDto);
+        CalculationSetting saved = calculationSettingRepository.save(calculateSetting);
+        return saved;
     }
 }

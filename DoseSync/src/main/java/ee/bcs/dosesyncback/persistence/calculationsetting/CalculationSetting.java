@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Table(name = "calculation_settings", schema = "dosesync")
 public class CalculationSetting {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calculation_settings_id_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "calculation_settings_id_gen", sequenceName = "calculation_settings_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;

@@ -1,7 +1,10 @@
 package ee.bcs.dosesyncback.service.machine;
 
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
+import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
+import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.machine.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ public class MachineService {
     private final MachineRepository machineRepository;
     private final MachineInfoMapper machineInfoMapper;
     private final MachineMapper machineMapper;
+    private final HospitalRepository hospitalRepository;
 
     public List<MachineInfo> getAllActiveMachines() {
 
@@ -29,6 +33,21 @@ public class MachineService {
        List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
 
        return machineDtos;
+
+    }
+    @Transactional
+    public Machine addMachine(MachineDto machineDto) {
+        if (machineRepository.serialNumberExistBy(machineDto.getMachineSerial())) {
+            throw new ForbiddenException("See masin on juba süsteemis!",
+                    403);
+        }
+        Machine machine = new Machine();
+        machine.setName(machineDto.getMachineName());
+        machine.setId(machineDto.getMachineId());
+        machine.setSerialNumber(machineDto.getMachineSerial());
+        machine.setStatus((machineDto.getMachineStatus()));
+        machineRepository.save(machine);
+        return machine;
 
     }
 }

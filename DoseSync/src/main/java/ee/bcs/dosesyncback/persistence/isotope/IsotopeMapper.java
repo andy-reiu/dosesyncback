@@ -16,5 +16,12 @@ public interface IsotopeMapper {
 
     List<IsotopeDto> toIsotopeDtos(List<Isotope> isotopes);
 
-    Isotope toEntity(IsotopeDto isotopeDto);
+    @Mapping(source = "isotopeId", target = "id")
+    @Mapping(source = "isotopeName", target = "name")
+    @Mapping(source = "halfLifeHr", target = "halfLifeHr")
+    @Mapping(source = "unit", target = "unit")
+    @Mapping(source = "isotopeStatus", target = "status")
+    Isotope toIsotope(IsotopeDto isotopeDto);
+
+    List<Isotope> toIsotopes(List<Isotope> isotopes);
 }
