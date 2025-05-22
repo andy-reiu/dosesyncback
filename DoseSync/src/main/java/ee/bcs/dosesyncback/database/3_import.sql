@@ -6,7 +6,7 @@ INSERT INTO role (id, name) VALUES (default, 'observer');
 -- Hospital
 INSERT INTO hospital (id, name, address) VALUES (default, 'Ida-tallinna keskhaigla', 'Ravi 18');
 
-INSERT INTO dosesync.calculation_settings (id, min_activity, max_activity, min_volume, machine_volume_max, machine_volume_min) VALUES (1, 100.00, 50000.00, 0.20, 4.00, 0.20);
+INSERT INTO dosesync.calculation_settings (id, min_activity, max_activity, min_volume, machine_volume_max, machine_volume_min,injection_interval, default_patient_weight, activity_per_kg) VALUES (1, 100.00, 50000.00, 0.20, 4.00, 0.20, '00:30', 70, 2.5);
 
 -- User
 INSERT INTO "user" (id, role_id, username, password, status) VALUES (default, 1, 'user', '123', 'A');

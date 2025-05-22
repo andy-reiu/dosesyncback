@@ -23,6 +23,9 @@ CREATE TABLE calculation_settings (
                                       min_volume decimal(8,2)  NOT NULL,
                                       machine_volume_max decimal(8,2)  NOT NULL,
                                       machine_volume_min decimal(8,2)  NOT NULL,
+                                      injection_interval TIME NOT NULL,
+                                      default_patient_weight double precision  NOT NULL,
+                                      activity_per_kg decimal(8,2)  NOT NULL,
                                       CONSTRAINT calculation_settings_pk PRIMARY KEY (id)
 );
 

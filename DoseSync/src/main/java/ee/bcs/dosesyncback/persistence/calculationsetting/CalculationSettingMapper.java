@@ -19,6 +19,10 @@ public interface CalculationSettingMapper {
     @Mapping(source = "minVolume", target = "settingMinVolume")
     @Mapping(source = "machineVolumeMax", target = "settingMachineVolumeMax")
     @Mapping(source = "machineVolumeMin", target = "settingMachineVolumeMin")
+    @Mapping(source = "injectionInterval", target = "injectionInterval")
+    @Mapping(source = "patientWeight", target = "defaultPatientWeight")
+    @Mapping(source = "activityPerKg", target = "activityPerKg")
+
     //convert objects
     CalculationSettingDto toCalculationSettingDto(CalculationSetting calculationSetting);
 
@@ -33,6 +37,9 @@ public interface CalculationSettingMapper {
     @Mapping(source = "settingMinVolume", target = "minVolume")
     @Mapping(source = "settingMachineVolumeMax", target = "machineVolumeMax")
     @Mapping(source = "settingMinActivity", target = "machineVolumeMin")
+    @Mapping(source = "injectionInterval", target = "injectionInterval")
+    @Mapping(source = "defaultPatientWeight", target = "patientWeight")
+    @Mapping(source = "activityPerKg", target = "activityPerKg")
     CalculationSetting toCalculateSetting(CalculationSettingDto calculationSettingDto);
 
     List<CalculationSetting> calculationSettings(List<CalculationSettingDto> calculationSettingDtos);

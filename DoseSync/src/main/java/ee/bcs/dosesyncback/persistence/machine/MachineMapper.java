@@ -20,8 +20,15 @@ public interface MachineMapper {
 
     List<MachineDto> toMachineDtos(List<Machine> machines);
 
+    @Mapping(source = "machineId", target = "id")
+    @Mapping(source = "hospitalId", target = "hospital.id")
+    @Mapping(source = "machineName", target = "name")
+    @Mapping(source = "machineSerial", target = "serialNumber")
+    @Mapping(source = "machineDescription", target = "description")
+    @Mapping(source = "machineStatus", target = "status")
+    Machine toMachine(MachineDto machineDto);
 
-    Machine toEntity(MachineDto machineDto);
+    List<Machine> toMachines(List<MachineDto> machineDtos);
 
 
 }

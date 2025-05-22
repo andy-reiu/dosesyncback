@@ -41,13 +41,9 @@ public class MachineService {
             throw new ForbiddenException("See masin on juba süsteemis!",
                     403);
         }
-        Machine machine = new Machine();
-        machine.setName(machineDto.getMachineName());
-        machine.setId(machineDto.getMachineId());
-        machine.setSerialNumber(machineDto.getMachineSerial());
-        machine.setStatus((machineDto.getMachineStatus()));
-        machineRepository.save(machine);
-        return machine;
+        Machine machine = machineMapper.toMachine(machineDto);
+        Machine saved = machineRepository.save(machine);
+        return saved;
 
     }
 }
