@@ -2,6 +2,7 @@ package ee.bcs.dosesyncback.persistence.injection;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,6 +20,11 @@ public class Injection {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 12)
+    @NotNull
+    @Column(name = "acc", nullable = false, length = 12)
+    private String acc;
+
     @NotNull
     @Column(name = "weight", nullable = false, precision = 4, scale = 1)
     private BigDecimal weight;
@@ -34,5 +40,4 @@ public class Injection {
     @NotNull
     @Column(name = "injected_activity", nullable = false, precision = 8, scale = 2)
     private BigDecimal injectedActivity;
-
 }

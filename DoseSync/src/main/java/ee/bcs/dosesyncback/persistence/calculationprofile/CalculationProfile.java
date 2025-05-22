@@ -38,9 +38,9 @@ public class CalculationProfile {
     @Column(name = "calibration_time", nullable = false)
     private LocalTime calibrationTime;
 
-    @NotNull
-    @Column(name = "administration_time", nullable = false)
-    private LocalTime administrationTime;
+//    @NotNull
+//    @Column(name = "administration_time", nullable = false)
+//    private LocalTime administrationTime;
 
 //    @NotNull
 //    @Column(name = "activity_before_first", nullable = false)

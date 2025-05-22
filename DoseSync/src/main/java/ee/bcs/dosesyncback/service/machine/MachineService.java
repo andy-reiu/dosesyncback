@@ -18,7 +18,6 @@ public class MachineService {
     private final MachineInfoMapper machineMapper;
 
     public List<MachineInfo> getAllActiveMachines() {
-
         List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
         List<MachineInfo> machineInfos = machineMapper.toMachineInfos(machines);
         return machineInfos;

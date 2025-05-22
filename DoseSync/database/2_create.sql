@@ -9,7 +9,7 @@ CREATE TABLE calculation_profile (
                                      isotope_id int  NOT NULL,
                                      calibrated_activity decimal(8,2)  NOT NULL,
                                      calibration_time time  NOT NULL,
-                                     administration_time time  NOT NULL,
+                                     --administration_time time  NOT NULL, -- kas seda on ikkagi vaja?
                                      --activity_before_first int  NOT NULL, -- kas seda on ikkagi vaja?
                                      fill_volume int  NOT NULL,
                                      CONSTRAINT calculation_profile_pk PRIMARY KEY (id)
@@ -23,6 +23,9 @@ CREATE TABLE calculation_settings (
                                       min_volume decimal(8,2)  NOT NULL,
                                       machine_volume_max decimal(8,2)  NOT NULL,
                                       machine_volume_min decimal(8,2)  NOT NULL,
+                                      injection_interval TIME NOT NULL,
+                                      default_patient_weight double precision  NOT NULL,
+                                      activity_per_kg decimal(8,2)  NOT NULL,
                                       CONSTRAINT calculation_settings_pk PRIMARY KEY (id)
 );
 
@@ -33,7 +36,6 @@ CREATE TABLE daily_study (
                              patient_id int  NOT NULL,
                              injection_id int  NOT NULL,
                              machine_fill_id int  NOT NULL,
-                             acc varchar(12) NOT NULL,
                              status char  NOT NULL,
                              created_at timestamp  NOT NULL,
                              updated_at timestamp  NOT NULL,
@@ -51,6 +53,7 @@ CREATE TABLE hospital (
 -- Table: injection
 CREATE TABLE injection (
                            id serial  NOT NULL,
+                           acc varchar(12) NOT NULL,
                            weight decimal(4,1)  NOT NULL,
                            mbq_kg decimal(7,3)  NOT NULL,
                            injected_time time  NOT NULL,

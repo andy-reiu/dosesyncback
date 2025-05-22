@@ -42,11 +42,6 @@ public class DailyStudy {
     @JoinColumn(name = "machine_fill_id", nullable = false)
     private MachineFill machineFill;
 
-    @Size(max = 12)
-    @NotNull
-    @Column(name = "acc", nullable = false, length = 12)
-    private String acc;
-
     @NotNull
     @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)
     private String status;
