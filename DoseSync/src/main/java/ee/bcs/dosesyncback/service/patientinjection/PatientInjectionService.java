@@ -21,7 +21,7 @@ public class PatientInjectionService {
 
     public List<PatientInjectionInfo> getAllStudiesPatientInjections(Integer studyId) {
         //Injection injection = injectionRepository.getReferenceById(studyId); //VALE
-        PatientInjectionInfo patientInjectionInfo = patientInjectionMapper.toPatientInjectionInfo(injection);
+        //PatientInjectionInfo patientInjectionInfo = patientInjectionMapper.toPatientInjectionInfo(injection);
 
         return null;
     }
