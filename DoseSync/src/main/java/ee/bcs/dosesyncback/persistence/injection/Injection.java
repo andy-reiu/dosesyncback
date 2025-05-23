@@ -1,10 +1,8 @@
 package ee.bcs.dosesyncback.persistence.injection;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -18,9 +16,14 @@ import java.time.LocalTime;
 @Table(name = "injection", schema = "dosesync")
 public class Injection {
     @Id
-    @ColumnDefault("nextval('dosesync.injection_id_seq')")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
+    @Size(max = 12)
+    @NotNull
+    @Column(name = "acc", nullable = false, length = 12)
+    private String acc;
 
     @NotNull
     @Column(name = "weight", nullable = false, precision = 4, scale = 1)
@@ -37,5 +40,4 @@ public class Injection {
     @NotNull
     @Column(name = "injected_activity", nullable = false, precision = 8, scale = 2)
     private BigDecimal injectedActivity;
-
 }

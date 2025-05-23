@@ -11,5 +11,5 @@ public interface MachineRepository extends JpaRepository<Machine, Integer> {
     List<Machine> findAll();
 
     @Query("select m from Machine m where m.status = :status")
-    List<Machine> findAllBy(String status);
+    List<Machine> findMachinesBy(String status);
 }

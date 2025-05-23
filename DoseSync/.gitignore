@@ -5,6 +5,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Ignore Spring Boot config files
+application.properties
+application.yml
+
 ### STS ###
 .apt_generated
 .classpath

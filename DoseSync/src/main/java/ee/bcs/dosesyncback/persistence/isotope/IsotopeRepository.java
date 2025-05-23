@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface IsotopeRepository extends JpaRepository<Isotope, Integer> {
 
-  @Query("select i from Isotope i")
-  List<Isotope> findAll();
+    @Query("select i from Isotope i")
+    List<Isotope> findAll();
+
+    @Query("select i from Isotope i where i.status = :status")
+    List<Isotope> findIsotopesBy(String status);
 }

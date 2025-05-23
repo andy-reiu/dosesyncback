@@ -2,7 +2,7 @@ package ee.bcs.dosesyncback.service.machine;
 
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import ee.bcs.dosesyncback.persistence.machine.Machine;
-import ee.bcs.dosesyncback.persistence.machine.MachineMapper;
+import ee.bcs.dosesyncback.persistence.machine.MachineInfoMapper;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,10 @@ import java.util.List;
 public class MachineService {
 
     private final MachineRepository machineRepository;
-    private final MachineMapper machineMapper;
+    private final MachineInfoMapper machineMapper;
 
-    public List<MachineInfo> getAllMachines() {
-
-        List<Machine> machines = machineRepository.findAllBy(MachineStatus.ACTIVE.getCode());
+    public List<MachineInfo> getAllActiveMachines() {
+        List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
         List<MachineInfo> machineInfos = machineMapper.toMachineInfos(machines);
         return machineInfos;
     }

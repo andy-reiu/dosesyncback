@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Table(name = "machine_fill", schema = "dosesync")
 public class MachineFill {
     @Id
-    @ColumnDefault("nextval('dosesync.machine_fill_id_seq')")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
