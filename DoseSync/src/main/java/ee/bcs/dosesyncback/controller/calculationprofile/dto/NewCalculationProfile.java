@@ -17,7 +17,7 @@ public class NewCalculationProfile {
     private Integer studyId;
     private Integer isotopeId;
     private BigDecimal calibratedActivity;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime calibrationTime;
     private Integer fillVolume;
 }

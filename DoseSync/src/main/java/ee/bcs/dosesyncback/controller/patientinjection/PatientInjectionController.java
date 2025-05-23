@@ -1,23 +1,19 @@
 package ee.bcs.dosesyncback.controller.patientinjection;
 
-import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileInfo;
+import ee.bcs.dosesyncback.controller.patientinjection.dto.NewPatientInjectionRequest;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionInfo;
 import ee.bcs.dosesyncback.service.patientinjection.PatientInjectionService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class PatientInjectionController {
 
     private final PatientInjectionService patientInjectionService;
-
-    public PatientInjectionController(PatientInjectionService patientInjectionService) {
-        this.patientInjectionService = patientInjectionService;
-    }
 
     @GetMapping("/patient-injections")
     @Operation(
@@ -25,5 +21,13 @@ public class PatientInjectionController {
             description = "Tagastab listi patsiendi süsimistest.")
     public List<PatientInjectionInfo> getAllStudiesPatientInjections(@RequestParam Integer studyId) {
         return patientInjectionService.getAllStudiesPatientInjections(studyId);
+    }
+
+    @PostMapping("/patient-injection")
+    @Operation(
+            summary = "Lisab patsiendi süstimise.",
+            description = "Ei tagasta midagi.")
+    public void newPatientInjection(@RequestBody NewPatientInjectionRequest newPatientInjectionRequest) {
+        patientInjectionService.newPatientInjection(newPatientInjectionRequest);
     }
 }

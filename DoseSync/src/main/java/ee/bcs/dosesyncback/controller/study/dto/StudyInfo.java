@@ -24,5 +24,6 @@ public class StudyInfo implements Serializable {
     private String studyStatus;
     private Integer calculationMachineRinseVolume;
     private Integer calculationMachineRinseActivity;
+    private Integer isotopeId;
     private String isotopeName;
 }
