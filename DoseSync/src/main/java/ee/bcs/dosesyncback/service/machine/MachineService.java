@@ -5,6 +5,9 @@ import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.machine.*;
 import jakarta.transaction.Transactional;
+import ee.bcs.dosesyncback.persistence.machine.MachineInfoMapper;
+import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
+import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,24 +18,25 @@ import java.util.List;
 public class MachineService {
 
     private final MachineRepository machineRepository;
+    private final MachineInfoMapper machineMapper;
     private final MachineInfoMapper machineInfoMapper;
     private final MachineMapper machineMapper;
     private final HospitalRepository hospitalRepository;
 
     public List<MachineInfo> getAllActiveMachines() {
-
-        List<Machine> machines = machineRepository.findAllBy(MachineStatus.ACTIVE.getCode());
+        List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
         List<MachineInfo> machineInfos = machineInfoMapper.toMachineInfos(machines);
         return machineInfos;
     }
 
 
+
     public List<MachineDto> getAllMachines() {
         List<Machine> machines = machineRepository.findAll();
 
-       List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
+        List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
 
-       return machineDtos;
+        return machineDtos;
 
     }
     @Transactional

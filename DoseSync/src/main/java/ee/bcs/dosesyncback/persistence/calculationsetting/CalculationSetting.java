@@ -15,7 +15,6 @@ import java.time.LocalTime;
 public class CalculationSetting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @SequenceGenerator(name = "calculation_settings_id_gen", sequenceName = "calculation_settings_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -45,7 +44,7 @@ public class CalculationSetting {
 
     @NotNull
     @Column(name = "default_patient_weight", nullable = false)
-    private Double patientWeight;
+    private Double defaultPatientWeight;
 
     @NotNull
     @Column(name = "activity_per_kg", nullable = false, precision = 8, scale = 2)

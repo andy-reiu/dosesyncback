@@ -7,10 +7,10 @@ CREATE TABLE calculation_profile (
                                      id serial  NOT NULL,
                                      study_id int  NOT NULL,
                                      isotope_id int  NOT NULL,
-                                     calibrated_actity decimal(8,2)  NOT NULL,
+                                     calibrated_activity decimal(8,2)  NOT NULL,
                                      calibration_time time  NOT NULL,
-                                     administration_time time  NOT NULL,
-                                     activity_before_first int  NOT NULL,
+                                     --administration_time time  NOT NULL, -- kas seda on ikkagi vaja?
+                                     --activity_before_first int  NOT NULL, -- kas seda on ikkagi vaja?
                                      fill_volume int  NOT NULL,
                                      CONSTRAINT calculation_profile_pk PRIMARY KEY (id)
 );
@@ -36,7 +36,7 @@ CREATE TABLE daily_study (
                              patient_id int  NOT NULL,
                              injection_id int  NOT NULL,
                              machine_fill_id int  NOT NULL,
-                             status char(1)  NOT NULL,
+                             status char  NOT NULL,
                              created_at timestamp  NOT NULL,
                              updated_at timestamp  NOT NULL,
                              CONSTRAINT daily_study_pk PRIMARY KEY (id)
@@ -53,6 +53,7 @@ CREATE TABLE hospital (
 -- Table: injection
 CREATE TABLE injection (
                            id serial  NOT NULL,
+                           acc varchar(12) NOT NULL,
                            weight decimal(4,1)  NOT NULL,
                            mbq_kg decimal(7,3)  NOT NULL,
                            injected_time time  NOT NULL,
@@ -140,12 +141,14 @@ CREATE TABLE study (
                        id serial  NOT NULL,
                        user_id int  NOT NULL,
                        machine_id int  NOT NULL,
+                       isotope_id int  NOT NULL,
                        date date  NULL,
                        nr_patients int  NULL,
                        start_time time  NULL,
                        end_time time  NULL,
                        total_activity decimal(8,2)  NULL,
                        comment varchar(255)  NULL,
+                       status char  NOT NULL,
                        calculation_machine_rinse_volume int  NULL,
                        calculation_machine_rinse_activity int  NULL,
                        CONSTRAINT study_pk PRIMARY KEY (id)
@@ -271,6 +274,14 @@ ALTER TABLE profile ADD CONSTRAINT profile_user
 ALTER TABLE study ADD CONSTRAINT study_machine
     FOREIGN KEY (machine_id)
         REFERENCES machine (id)
+        NOT DEFERRABLE
+            INITIALLY IMMEDIATE
+;
+
+-- Reference: study_isotope (table: study)
+ALTER TABLE study ADD CONSTRAINT study_isotope
+    FOREIGN KEY (isotope_id)
+        REFERENCES isotope (id)
         NOT DEFERRABLE
             INITIALLY IMMEDIATE
 ;
