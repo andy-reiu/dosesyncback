@@ -15,12 +15,12 @@ import static ee.bcs.dosesyncback.infrastructure.Error.INCORRECT_CREDENTIALS;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final LoginMapper userMapper;
+    private final LoginMapper loginMapper;
     private final LoginRepository loginRepository;
 
     public LoginResponse login(String username, String password) {
         User user = getValidUser(username, password);
-        return userMapper.toLoginResponse(user);
+        return loginMapper.toLoginResponse(user);
     }
 
     private User getValidUser(String username, String password) {
