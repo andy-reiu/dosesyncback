@@ -1,5 +1,6 @@
-package ee.bcs.dosesyncback.persistence.user;
+package ee.bcs.dosesyncback.persistence.login;
 
+import ee.bcs.dosesyncback.persistence.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface LoginRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u where u.username = :username and u.password = :password and u.status = :status")
     Optional<User> findUserBy(String username, String password, String status);
