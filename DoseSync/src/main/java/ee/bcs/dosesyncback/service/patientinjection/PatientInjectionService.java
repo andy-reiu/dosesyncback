@@ -16,8 +16,6 @@ import ee.bcs.dosesyncback.persistence.patient.PatientRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
 import ee.bcs.dosesyncback.persistence.study.StudyStatus;
-import ee.bcs.dosesyncback.service.calculationprofile.CalculationProfileService;
-import jakarta.persistence.Column;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -59,7 +56,6 @@ public class PatientInjectionService {
 
     @Transactional
     public void newPatientInjection(NewPatientInjectionRequest newPatientInjectionRequest) {
-        System.out.println(newPatientInjectionRequest.getAcc());
 
         Integer studyId = newPatientInjectionRequest.getStudyId();
         Injection injection = patientInjectionMapper.toInjection(newPatientInjectionRequest);
@@ -86,7 +82,6 @@ public class PatientInjectionService {
             // TODO: Just make it work
             CalculationProfile calculationProfile = calculationProfiles.getLast();
 
-
             long minutesBetween = ChronoUnit.MINUTES.between(calculationProfile.getCalibrationTime(), injection.getInjectedTime());
             double deltaTDays = minutesBetween / 1440.0; // Convert minutes to days
             double decayFactor = Math.pow(2, -deltaTDays / halfLifeDays);
@@ -110,8 +105,9 @@ public class PatientInjectionService {
             BigDecimal remainingVolume = vialVolume.subtract(injectedVolume);
             machineFill.setRemainingVolume(remainingVolume);
 
-        }else {
-            DailyStudy previousDailyStudy = dailyStudyRepository.findByStudyIdOrderByIdDesc(studyId);
+        } else {
+            List<DailyStudy> dailyStudies = dailyStudyRepository.findDailyStudiesBy(studyId);
+            DailyStudy previousDailyStudy = dailyStudies.getLast();
             Injection previousInjection = previousDailyStudy.getInjection();
 
             long minutesBetween = ChronoUnit.MINUTES.between(previousInjection.getInjectedTime(), injection.getInjectedTime());
