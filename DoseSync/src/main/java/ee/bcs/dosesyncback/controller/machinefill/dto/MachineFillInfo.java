@@ -1,6 +1,5 @@
 package ee.bcs.dosesyncback.controller.machinefill.dto;
 
-import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

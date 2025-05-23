@@ -16,6 +16,6 @@ public interface MachineFillMapper {
     @Mapping(source = "remainingVolume", target = "remainingVolume")
     MachineFillInfo toMachineFillInfo(MachineFill machineFill);
 
-    List<MachineFillInfo> toMachineFillInfo(List<MachineFill> machineFill);
+    List<MachineFillInfo> toMachineFillInfos(List<MachineFill> machineFills);
 
 }
