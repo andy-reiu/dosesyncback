@@ -23,5 +23,5 @@ public interface IsotopeMapper {
     @Mapping(source = "isotopeStatus", target = "status")
     Isotope toIsotope(IsotopeDto isotopeDto);
 
-    List<Isotope> toIsotopes(List<Isotope> isotopes);
+    List<Isotope> toIsotopes(List<IsotopeDto> isotopeDtos);
 }

@@ -1,10 +1,9 @@
 package ee.bcs.dosesyncback.service.isotope;
 
 import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
-import ee.bcs.dosesyncback.persistence.isotope.Isotope;
-import ee.bcs.dosesyncback.persistence.isotope.IsotopeInfoMapper;
-import ee.bcs.dosesyncback.persistence.isotope.IsotopeRepository;
-import ee.bcs.dosesyncback.persistence.isotope.IsotopeStatus;
+import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
+import ee.bcs.dosesyncback.persistence.isotope.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

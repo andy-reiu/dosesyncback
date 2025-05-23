@@ -18,9 +18,8 @@ import java.util.List;
 public class MachineService {
 
     private final MachineRepository machineRepository;
-    private final MachineInfoMapper machineMapper;
-    private final MachineInfoMapper machineInfoMapper;
     private final MachineMapper machineMapper;
+    private final MachineInfoMapper machineInfoMapper;
     private final HospitalRepository hospitalRepository;
 
     public List<MachineInfo> getAllActiveMachines() {
