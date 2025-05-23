@@ -148,8 +148,6 @@ INSERT INTO dosesync.machine_fill_calculation_profile (id, machine_fill_id, calc
 
 
 
-
-
 -- -- Roles
 -- INSERT INTO dosesync.role (id, name) VALUES (default, 'user');
 -- INSERT INTO dosesync.role (id, name) VALUES (default, 'admin');

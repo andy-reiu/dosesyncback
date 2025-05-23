@@ -1,7 +1,10 @@
 package ee.bcs.dosesyncback.service.machine;
 
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
-import ee.bcs.dosesyncback.persistence.machine.Machine;
+import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
+import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
+import ee.bcs.dosesyncback.persistence.machine.*;
+import jakarta.transaction.Transactional;
 import ee.bcs.dosesyncback.persistence.machine.MachineInfoMapper;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
@@ -15,11 +18,35 @@ import java.util.List;
 public class MachineService {
 
     private final MachineRepository machineRepository;
-    private final MachineInfoMapper machineMapper;
+    private final MachineMapper machineMapper;
+    private final MachineInfoMapper machineInfoMapper;
+    private final HospitalRepository hospitalRepository;
 
     public List<MachineInfo> getAllActiveMachines() {
         List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
-        List<MachineInfo> machineInfos = machineMapper.toMachineInfos(machines);
+        List<MachineInfo> machineInfos = machineInfoMapper.toMachineInfos(machines);
         return machineInfos;
+    }
+
+
+
+    public List<MachineDto> getAllMachines() {
+        List<Machine> machines = machineRepository.findAll();
+
+        List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
+
+        return machineDtos;
+
+    }
+    @Transactional
+    public Machine addMachine(MachineDto machineDto) {
+        if (machineRepository.serialNumberExistBy(machineDto.getMachineSerial())) {
+            throw new ForbiddenException("See masin on juba süsteemis!",
+                    403);
+        }
+        Machine machine = machineMapper.toMachine(machineDto);
+        Machine saved = machineRepository.save(machine);
+        return saved;
+
     }
 }
