@@ -41,7 +41,7 @@ public class PatientInjectionService {
     private final StudyRepository studyRepository;
 
     public List<PatientInjectionInfo> getAllStudiesPatientInjections(Integer studyId) {
-        List<DailyStudy> dailyStudies = dailyStudyRepository.findInjectionIdsByStudyId(studyId);
+        List<DailyStudy> dailyStudies = dailyStudyRepository.getDailyStudiesBy(studyId);
         List<PatientInjectionInfo> patientInjectionInfos = new ArrayList<>();
         for (DailyStudy dailyStudy : dailyStudies) {
             System.out.println(dailyStudy.getId());
