@@ -8,7 +8,7 @@ import java.util.List;
 public interface MachineMapper {
 ;
     @Mapping(source = "machineId", target = "id")
-    @Mapping(source = "hospitalId", target = "hospital.id")
+    @Mapping(source = "hospitalId", target = "hospital.id", ignore = true)
     @Mapping(source = "machineName", target = "name")
     @Mapping(source = "machineSerial", target = "serialNumber")
     @Mapping(source = "machineDescription", target = "description")
@@ -18,7 +18,7 @@ public interface MachineMapper {
     List<Machine> toMachine(List<MachineDto> machineDtos);
 
     @Mapping(source = "id", target = "machineId")
-    @Mapping(source = "hospital.id", target = "hospitalId")
+    @Mapping(source = "hospital.id", target = "hospitalId", ignore = true)
     @Mapping(source = "name", target = "machineName")
     @Mapping(source = "serialNumber", target = "machineSerial")
     @Mapping(source = "description", target = "machineDescription")
