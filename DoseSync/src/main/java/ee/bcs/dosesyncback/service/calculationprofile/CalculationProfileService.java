@@ -1,13 +1,14 @@
 package ee.bcs.dosesyncback.service.calculationprofile;
 
 import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileInfo;
-import ee.bcs.dosesyncback.controller.calculationprofile.dto.NewCalculationProfile;
+import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileRequest;
 import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileMapper;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepository;
 import ee.bcs.dosesyncback.persistence.isotope.Isotope;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
+import ee.bcs.dosesyncback.service.patientinjection.PatientInjectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class CalculationProfileService {
     private final CalculationProfileMapper calculationProfileMapper;
     private final CalculationProfileRepository calculationProfileRepository;
     private final StudyRepository studyRepository;
+    private final PatientInjectionService patientInjectionService;
 
     public List<CalculationProfileInfo> getAllStudiesCalculationProfiles(Integer studyId) {
         List<CalculationProfile> calculationProfiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
@@ -29,10 +31,10 @@ public class CalculationProfileService {
     }
 
     @Transactional
-    public Integer addCalculationProfile(NewCalculationProfile newCalculationProfile) {
-        CalculationProfile calculationProfile = calculationProfileMapper.toCalculationProfile(newCalculationProfile);
+    public Integer addCalculationProfile(CalculationProfileRequest calculationProfileRequest) {
+        CalculationProfile calculationProfile = calculationProfileMapper.toCalculationProfile(calculationProfileRequest);
 
-        Integer studyId = newCalculationProfile.getStudyId();
+        Integer studyId = calculationProfileRequest.getStudyId();
         Isotope isotope = studyRepository.getReferenceById(studyId).getIsotope();
         System.out.println(isotope.getName());
 
@@ -46,8 +48,9 @@ public class CalculationProfileService {
         Integer calculationProfileId = calculationProfileInfo.getCalculationProfileId();
         CalculationProfile calculationProfile = calculationProfileRepository.findById(calculationProfileId)
                 .orElseThrow(() -> new PrimaryKeyNotFoundException("calculationProfileId", calculationProfileId));
-        calculationProfileMapper.partialUpdateCalculationProfile(calculationProfileInfo, calculationProfile);
-        calculationProfileRepository.save(calculationProfile);
+        CalculationProfile updateCalculationProfile = calculationProfileMapper.partialUpdateCalculationProfile(calculationProfileInfo, calculationProfile);
+        calculationProfileRepository.save(updateCalculationProfile);
+        patientInjectionService.recalculateMachineFillsForStudy(studyId);
     }
 
     @Transactional

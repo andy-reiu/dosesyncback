@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface PatientRepository extends JpaRepository<Patient, Integer> {
 
-
     @Query("select p from Patient p where p.patientNationalId = :patientNationalId")
     Optional<Patient> findPatientBy(String patientNationalId);
 }
