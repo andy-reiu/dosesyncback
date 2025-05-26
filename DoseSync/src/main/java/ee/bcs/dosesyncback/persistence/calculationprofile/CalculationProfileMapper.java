@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.persistence.calculationprofile;
 
 import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileInfo;
-import ee.bcs.dosesyncback.controller.calculationprofile.dto.NewCalculationProfile;
+import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileRequest;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface CalculationProfileMapper {
     @Mapping(source = "fillVolume", target = "fillVolume")
     @Mapping(source = "studyId", target = "study.id")
     @Mapping(source = "isotopeId", target = "isotope.id")
-    CalculationProfile toCalculationProfile(NewCalculationProfile newCalculationProfile);
+    CalculationProfile toCalculationProfile(CalculationProfileRequest calculationProfileRequest);
 
     @Mapping(source = "id", target = "calculationProfileId")
     @Mapping(source = "calibrationTime", target = "calibrationTime")

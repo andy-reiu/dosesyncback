@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.controller.calculationprofile;
 
 import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileInfo;
-import ee.bcs.dosesyncback.controller.calculationprofile.dto.NewCalculationProfile;
+import ee.bcs.dosesyncback.controller.calculationprofile.dto.CalculationProfileRequest;
 import ee.bcs.dosesyncback.service.calculationprofile.CalculationProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +26,16 @@ public class CalculationProfileController {
     @Operation(
             summary = "Lisab uue kalkulatsiooni profiili.",
             description = "Tagastab uue uuringule kuulu studyId")
-    public Integer addCalculationProfile(@RequestBody NewCalculationProfile newCalculationProfile) {
-        return calculationProfileService.addCalculationProfile(newCalculationProfile);
+    public Integer addCalculationProfile(@RequestBody CalculationProfileRequest calculationProfileRequest) {
+        return calculationProfileService.addCalculationProfile(calculationProfileRequest);
     }
 
     @PutMapping("/calculation-profile")
     @Operation(
             summary = "Uuenda kalkulatsiooni profiili.",
             description = "Ei tagasta midagi.")
-    public void updateCalculationProfile(@RequestParam Integer studyId, @RequestBody CalculationProfileInfo calculationProfileInfo) {
+    public void updateCalculationProfile(@RequestParam Integer studyId,
+                                         @RequestBody CalculationProfileInfo calculationProfileInfo) {
         calculationProfileService.updateCalculationProfile(studyId, calculationProfileInfo);
     }
 

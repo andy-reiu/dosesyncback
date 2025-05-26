@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface CalculationProfileRepository extends JpaRepository<CalculationProfile, Integer> {
 
-
   @Query("select c from CalculationProfile c where c.study.id = :studyId order by c.id")
   List<CalculationProfile> findCalculationProfilesBy(Integer studyId);
 }

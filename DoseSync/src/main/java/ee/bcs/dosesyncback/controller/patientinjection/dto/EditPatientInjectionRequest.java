@@ -1,0 +1,22 @@
+package ee.bcs.dosesyncback.controller.patientinjection.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EditPatientInjectionRequest {
+    private Integer studyId;
+    private Integer injectionId;
+    private String patientNationalId;
+    private String acc;
+    private BigDecimal injectionWeight;
+    private BigDecimal injectionMbqKg;
+    private LocalTime injectedTime;
+    private BigDecimal injectedActivity;
+}
