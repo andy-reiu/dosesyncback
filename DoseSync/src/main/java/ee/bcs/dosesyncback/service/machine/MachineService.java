@@ -11,14 +11,13 @@ import ee.bcs.dosesyncback.persistence.machine.MachineInfoMapper;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +34,20 @@ public class MachineService {
         return machineInfos;
     }
 
-
-
     public List<MachineDto> getAllMachines() {
         List<Machine> machines = machineRepository.findAll();
-
         List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
 
         return machineDtos;
-
     }
+
+    public MachineDto getMachineById(int id) {
+        Machine machine = machineRepository.findById(id)
+                .orElseThrow(() -> new ResourceAccessException("Obj not found"));
+
+        return machineMapper.toMachineDto(machine);
+    }
+
     @Transactional
     public Machine addMachine(MachineDto machineDto) {
         Integer hospitalId = machineDto.getHospitalId();
@@ -60,7 +63,18 @@ public class MachineService {
         Machine machine = machineMapper.toMachine(machineDto);
         machine.setHospital(hospital);
         Machine saved = machineRepository.save(machine);
-        return saved;
 
+        return saved;
+    }
+
+    @Transactional
+    public MachineDto updateMachineStatus(int id, String status) {
+        Machine machine = machineRepository.findById(id)
+                .orElseThrow(() -> new ResourceAccessException("Obj not found"));
+
+        machine.setStatus(status);
+
+        machineRepository.save(machine);
+        return getMachineById(id);
     }
 }

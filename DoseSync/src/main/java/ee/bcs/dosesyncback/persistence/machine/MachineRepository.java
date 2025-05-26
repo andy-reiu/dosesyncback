@@ -16,4 +16,5 @@ public interface MachineRepository extends JpaRepository<Machine, Integer> {
 
     @Query("select (count(m) > 0) from Machine m where m.serialNumber = :serialNumber")
     boolean serialNumberExistBy(String serialNumber);
+
 }

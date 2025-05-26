@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(("/machine"))
 @RequiredArgsConstructor
 public class MachineController {
 
@@ -44,8 +43,14 @@ public class MachineController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "403", description = "Sellise nimega masin on juba süsteemis olemas!")
     })
-    public void addMachine(MachineDto machineDto) {
+    public void addMachine(@RequestBody MachineDto machineDto) {
         machineService.addMachine(machineDto);
     }
 
+    @PatchMapping("/{id}/patch-status")
+    public void updateMachineStatus(@PathVariable int id, @RequestParam String status ) {
+        System.out.println("id :: " + id);
+        System.out.println("status :: " + status);
+        machineService.updateMachineStatus(id, status);
+    }
 }
