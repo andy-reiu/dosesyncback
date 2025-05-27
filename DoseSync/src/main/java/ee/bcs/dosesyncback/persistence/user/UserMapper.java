@@ -23,4 +23,14 @@ public interface UserMapper {
 
     List<UserDto> toUserDtos(List<User> users);
 
-}
+    @Mapping(source = "userId", target = "id")
+    @Mapping(source = "roleId", target = "role.id")
+    @Mapping(source = "roleName", target = "role.name")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "password", target = "password")
+    @Mapping(source = "status", target = "status")
+    User toUser(UserDto userDto);
+
+    List<User> toUsers(List<UserDto> userDtos);}
+
+
