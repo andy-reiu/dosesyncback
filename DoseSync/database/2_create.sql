@@ -53,7 +53,7 @@ CREATE TABLE hospital (
 -- Table: injection
 CREATE TABLE injection (
                            id serial  NOT NULL,
-                           acc varchar(12) NOT NULL,
+                           acc varchar(16) NOT NULL,
                            weight decimal(4,1)  NOT NULL,
                            mbq_kg decimal(7,3)  NOT NULL,
                            injected_time time  NOT NULL,
@@ -149,8 +149,8 @@ CREATE TABLE study (
                        total_activity decimal(8,2)  NULL,
                        comment varchar(255)  NULL,
                        status char  NOT NULL,
-                       calculation_machine_rinse_volume int  NULL,
-                       calculation_machine_rinse_activity int  NULL,
+                       calculation_machine_rinse_volume decimal(8,2)  NULL,
+                       calculation_machine_rinse_activity decimal(8,2)  NULL,
                        CONSTRAINT study_pk PRIMARY KEY (id)
 );
 

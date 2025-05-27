@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.controller.patientinjection.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class EditPatientInjectionRequest {
     private String acc;
     private BigDecimal injectionWeight;
     private BigDecimal injectionMbqKg;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime injectedTime;
     private BigDecimal injectedActivity;
 }
