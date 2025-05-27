@@ -47,4 +47,12 @@ public class StudyController {
     public BigDecimal getStudiesLastMachineRinseActivity(@RequestParam Integer studyId) {
         return studyService.getStudiesLastMachineRinseActivity(studyId);
     }
+
+    @PostMapping("/study")
+    @Operation(
+            summary = "Võtab andmebaasist viimase süstitud koguse aktiivsuse",
+            description = "Tagastab kalkuleeritud aktiivsuse.")
+    public void addStudyInformation(@RequestParam Integer studyId){
+
+    }
 }
