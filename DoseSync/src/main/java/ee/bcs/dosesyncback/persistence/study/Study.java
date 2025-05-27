@@ -61,10 +61,10 @@ public class Study {
     @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)
     private String status;
 
-    @Column(name = "calculation_machine_rinse_volume")
-    private Integer calculationMachineRinseVolume;
+    @Column(name = "calculation_machine_rinse_volume", precision = 8, scale = 2)
+    private BigDecimal calculationMachineRinseVolume;
 
-    @Column(name = "calculation_machine_rinse_activity")
-    private Integer calculationMachineRinseActivity;
+    @Column(name = "calculation_machine_rinse_activity", precision = 8, scale = 2)
+    private BigDecimal calculationMachineRinseActivity;
 
 }

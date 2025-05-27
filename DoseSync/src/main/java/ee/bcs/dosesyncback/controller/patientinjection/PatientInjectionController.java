@@ -28,8 +28,8 @@ public class PatientInjectionController {
     @Operation(
             summary = "Lisab patsiendi süstimist.",
             description = "Ei tagasta midagi.")
-    public void newPatientInjection(@RequestBody NewPatientInjectionRequest newPatientInjectionRequest) {
-        patientInjectionService.addPatientInjection(newPatientInjectionRequest);
+    public void addPatientInjection(@RequestParam Integer isotopeId, @RequestBody NewPatientInjectionRequest newPatientInjectionRequest) {
+        patientInjectionService.addPatientInjection(isotopeId, newPatientInjectionRequest);
     }
 
     @PutMapping("/patient-injection")
@@ -47,5 +47,13 @@ public class PatientInjectionController {
             description = "Ei tagasta midagi.")
     public void removePatientInjection(@RequestParam Integer patientInjectionId) {
         patientInjectionService.removePatientInjection(patientInjectionId);
+    }
+
+    @GetMapping("/patient-injection/template")
+    @Operation(
+            summary = "Kasutab kalkulatsiooni sätteid nii koostab patsiendi süstimise template.",
+            description = "Tagastab template patsiendi süstimisest vajalike väljadega.")
+    public NewPatientInjectionRequest getStudyPatientInjectionTemplate(@RequestParam Integer studyId) {
+        return patientInjectionService.getStudyPatientInjectionTemplate(studyId);
     }
 }

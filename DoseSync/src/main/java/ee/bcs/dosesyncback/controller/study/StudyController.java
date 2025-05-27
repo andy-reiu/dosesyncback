@@ -5,11 +5,9 @@ import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
 import ee.bcs.dosesyncback.service.study.StudyService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -32,5 +30,21 @@ public class StudyController {
             description = "Tagastab uue uuringule kuulu studyId")
     public Integer addStudy(@RequestBody NewStudy newStudy) {
         return studyService.addStudy(newStudy);
+    }
+
+    @GetMapping("/study/machine-rinse-volume")
+    @Operation(
+            summary = "Tagastab kogu uuringu kalkuleeritud Karli loputusmahu.",
+            description = "Tagastab kalkuleeritud Karli loputusmahu.")
+    public BigDecimal calculateStudiesMachineRinseVolume(@RequestParam Integer studyId) {
+        return studyService.calculateStudiesMachineRinseVolume(studyId);
+    }
+
+    @GetMapping("/study/machine-remaining-activity")
+    @Operation(
+            summary = "Võtab andmebaasist viimase süstitud koguse aktiivsuse",
+            description = "Tagastab kalkuleeritud aktiivsuse.")
+    public BigDecimal getStudiesLastMachineRinseActivity(@RequestParam Integer studyId) {
+        return studyService.getStudiesLastMachineRinseActivity(studyId);
     }
 }

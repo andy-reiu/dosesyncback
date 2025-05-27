@@ -34,9 +34,9 @@ INSERT INTO user_image (id, profile_id, data) VALUES (default, 1, E'\\x89504E470
 
 -- Isotope
 INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'Tc-99m', 6.006, 'MBq', 'A');
-INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'F18', 1.830, 'MBq', 'A');
+INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'F18', 0.0762, 'MBq', 'A');
 INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'I131', 192.500, 'MBq', 'A');
-INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'FPyl', 0.500, 'MBq', 'A');
+INSERT INTO dosesync.isotope (id, name, half_life_hr, unit, status) VALUES (default, 'FPyl', 0.07625, 'MBq', 'A');
 
 -- Machine
 INSERT INTO dosesync.machine (id, hospital_id, name, serial_number, description, status)
@@ -63,22 +63,6 @@ INSERT INTO dosesync.study (id, user_id, machine_id, isotope_id, date, nr_patien
 VALUES (default, 3, 1, 1, '2025-04-16', 2, '08:30:00', '21:00:00', 6200.00, 'Andys Study', 'A', 2, 160);
 INSERT INTO dosesync.study (id, user_id, machine_id, isotope_id, date, nr_patients, start_time, end_time, total_activity, comment, status, calculation_machine_rinse_volume, calculation_machine_rinse_activity)
 VALUES (default, 3, 1, 1, '2025-06-16', 5, '08:30:00', '20:00:00', 2220.00, 'THIS IS NOT THE DROIDS', 'B', 4, 250);
-
--- -- Calculation Profile
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
--- VALUES (default, 1, 1, 4500.00, '09:30:00', '11:45:00', 1919, 6);
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
--- VALUES (default, 2, 2, 6600.00, '09:30:00', '17:45:00', 5000, 23);
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, activity_before_first, fill_volume)
--- VALUES (default, 3, 3, 6600.00, '09:30:00', '13:45:00', 1000, 21);
-
--- -- Calculation Profile (kustutatud activity before)
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
--- VALUES (default, 1, 1, 4500.00, '09:30:00', '11:45:00', 6);
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
--- VALUES (default, 2, 2, 6600.00, '09:30:00', '17:45:00', 23);
--- INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, administration_time, fill_volume)
--- VALUES (default, 3, 3, 6600.00, '09:30:00', '13:45:00', 21);
 
 -- Calculation Profile (kustutatud administration_time and acitivity before)
 INSERT INTO dosesync.calculation_profile (id, study_id, isotope_id, calibrated_activity, calibration_time, fill_volume)
