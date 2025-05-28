@@ -4,11 +4,14 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel       = MappingConstants.ComponentModel.SPRING,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MachineMapper {
 ;
     @Mapping(source = "machineId", target = "id")
-    @Mapping(source = "hospitalId", target = "hospital.id", ignore = true)
+    @Mapping(source = "hospitalId", target = "hospital.id")
     @Mapping(source = "machineName", target = "name")
     @Mapping(source = "machineSerial", target = "serialNumber")
     @Mapping(source = "machineDescription", target = "description")
@@ -18,7 +21,7 @@ public interface MachineMapper {
     List<Machine> toMachine(List<MachineDto> machineDtos);
 
     @Mapping(source = "id", target = "machineId")
-    @Mapping(source = "hospital.id", target = "hospitalId", ignore = true)
+    @Mapping(source = "hospital.id", target = "hospitalId")
     @Mapping(source = "name", target = "machineName")
     @Mapping(source = "serialNumber", target = "machineSerial")
     @Mapping(source = "description", target = "machineDescription")
@@ -26,6 +29,13 @@ public interface MachineMapper {
     MachineDto toMachineDto(Machine machine);
 
     List<MachineDto> toMachineDtos(List<Machine> machines);
+
+    @Mapping(source = "machineName",        target = "name")
+    @Mapping(source = "machineSerial",      target = "serialNumber")
+    @Mapping(source = "machineDescription", target = "description")
+    @Mapping(ignore = true, target = "hospital.id")
+
+    void updateFromMachineDto(MachineDto machineDto, @MappingTarget Machine machine);
 
 
 }

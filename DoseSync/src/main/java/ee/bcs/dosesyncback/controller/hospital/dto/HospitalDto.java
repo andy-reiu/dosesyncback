@@ -1,21 +1,14 @@
 package ee.bcs.dosesyncback.controller.hospital.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.io.Serializable;
-
-/**
- * DTO for {@link ee.bcs.dosesyncback.persistence.hospital.Hospital}
- */
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class HospitalDto implements Serializable {
-    @NotNull
-    @Size(max = 255)
-    private String name;
+@AllArgsConstructor
+@Data
+public class HospitalDto {
+    private Integer hospitalId;
+    private String hospitalName;
+    private String hospitalAddress;
 }

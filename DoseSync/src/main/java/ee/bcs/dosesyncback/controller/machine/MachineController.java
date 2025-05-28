@@ -7,12 +7,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(("/machine"))
+@CrossOrigin(origins = "http://localhost:8081",
+        allowedHeaders = "*",
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PATCH,
+                RequestMethod.DELETE,
+                RequestMethod.PUT,
+                RequestMethod.OPTIONS
+        })
 @RequiredArgsConstructor
 public class MachineController {
 
@@ -44,13 +55,19 @@ public class MachineController {
             @ApiResponse(responseCode = "403", description = "Sellise nimega masin on juba süsteemis olemas!")
     })
     public void addMachine(@RequestBody MachineDto machineDto) {
+
         machineService.addMachine(machineDto);
     }
 
-    @PatchMapping("/{id}/patch-status")
+    @PatchMapping("/{id}/machine-status")
     public void updateMachineStatus(@PathVariable int id, @RequestParam String status ) {
-        System.out.println("id :: " + id);
-        System.out.println("status :: " + status);
+
         machineService.updateMachineStatus(id, status);
+    }
+    @PatchMapping("/machines/{id}")
+    public ResponseEntity<MachineDto> updateMachine(@PathVariable Integer id, @RequestBody MachineDto machineDto) {
+        MachineDto updatedMachineDto = machineService.updateMachine(id, machineDto);
+
+        return ResponseEntity.ok(updatedMachineDto);
     }
 }

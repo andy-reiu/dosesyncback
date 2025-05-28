@@ -7,12 +7,7 @@ import java.util.List;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CalculationSettingMapper {
 
-//    private Integer settingId;
-//    private BigDecimal settingMinActivity;
-//    private BigDecimal settingMaxActivity;
-//    private BigDecimal settingMinVolume;
-//    private BigDecimal settingMachineVolumeMax;
-//    private BigDecimal settingMachineVolumeMin;
+
     @Mapping(source = "id", target = "settingId")
     @Mapping(source = "minActivity", target = "settingMinActivity")
     @Mapping(source = "maxActivity", target = "settingMaxActivity")
@@ -44,5 +39,13 @@ public interface CalculationSettingMapper {
 
     List<CalculationSetting> calculationSettings(List<CalculationSettingDto> calculationSettingDtos);
 
-
+    @Mapping(source = "settingMinActivity", target = "minActivity")
+    @Mapping(source = "settingMaxActivity", target = "maxActivity")
+    @Mapping(source = "settingMinVolume", target = "minVolume")
+    @Mapping(source = "settingMachineVolumeMax", target = "machineVolumeMax")
+    @Mapping(source = "settingMinActivity", target = "machineVolumeMin")
+    @Mapping(source = "injectionInterval", target = "injectionInterval")
+    @Mapping(source = "defaultPatientWeight", target = "defaultPatientWeight")
+    @Mapping(source = "activityPerKg", target = "activityPerKg")
+    void updateFromCalculationSettingDto(CalculationSettingDto calculationSettingDto,@MappingTarget CalculationSetting calculationSetting);
 }

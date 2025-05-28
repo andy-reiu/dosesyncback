@@ -1,30 +1,29 @@
 package ee.bcs.dosesyncback.controller.isotope;
 
 import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
-import ee.bcs.dosesyncback.service.isotope.IsotopeService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import ee.bcs.dosesyncback.infrastructure.error.ApiError;
+import ee.bcs.dosesyncback.persistence.isotope.Isotope;
 import ee.bcs.dosesyncback.persistence.isotope.IsotopeDto;
+import ee.bcs.dosesyncback.service.isotope.IsotopeService;
+import ee.bcs.dosesyncback.service.machine.MachineService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/isotope")
 @RequiredArgsConstructor
 public class IsotopeController {
 
     private final IsotopeService isotopeService;
+    private final MachineService machineService;
 
     //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
     @GetMapping("/active-isotopes")
@@ -32,6 +31,7 @@ public class IsotopeController {
             summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik isotoobid.",
             description = "Tagastab info koos isotopeId ja isotopeName'ga")
     public List<IsotopeInfo> getAllActiveIsotopes() {
+
         return isotopeService.getAllActiveIsotopes();
     }
 
@@ -43,6 +43,7 @@ public class IsotopeController {
             description = "Tagastab info koos isotopeId, isotopeName, halfLifeHr, unit ja statusega.")
     public List<IsotopeDto> getAllIsotopes() {
         List<IsotopeDto> isotopeDtos = isotopeService.getAllIsotopes();
+
         return isotopeDtos;
     }
 
@@ -51,10 +52,30 @@ public class IsotopeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "403", description = "Sellise nimega isotoop on juba süsteemis olemas", content = @Content(schema = @Schema(implementation = ApiError.class)))})
-    public void addIsotope(@RequestBody IsotopeDto isotopeDto) {
-        isotopeService.addIsotope(isotopeDto);
+    public Isotope addIsotope(@RequestBody IsotopeDto isotopeDto) {
+
+        return isotopeService.addIsotope(isotopeDto);
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Kustutab isotoobi info")
+    public ResponseEntity<Object> removeIsotope(@PathVariable("id") Integer isotopeId) {
+        isotopeService.removeIsotope(isotopeId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/isotope-status")
+    public IsotopeDto updateIsotopeStatus(@PathVariable Integer id, @RequestParam String status) {
+        return isotopeService.updateIsotopeStatus(id, status);
+    }
+
+    @PatchMapping("/isotopes/{id}")
+    public ResponseEntity<IsotopeDto> updateIsotope(@PathVariable Integer id, @RequestBody IsotopeDto isotopeDto) {
+        IsotopeDto updatedIsotopeDto = isotopeService.updateIsotope(id, isotopeDto);
+
+        return ResponseEntity.ok(updatedIsotopeDto);
+    }
 }
 
 

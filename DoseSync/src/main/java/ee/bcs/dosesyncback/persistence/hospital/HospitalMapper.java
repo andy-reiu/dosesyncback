@@ -1,10 +1,12 @@
 package ee.bcs.dosesyncback.persistence.hospital;
 
+import ee.bcs.dosesyncback.controller.hospital.dto.HospitalDto;
 import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = MappingConstants.ComponentModel.SPRING)
 public interface HospitalMapper {
 
     @Mapping(source = "hospitalId", target = "id")
@@ -21,5 +23,7 @@ public interface HospitalMapper {
 
     List<HospitalDto> toHospitalDtos(List<Hospital> hospitals);
 
-
+    @Mapping(source = "hospitalName", target = "name")
+    @Mapping(source = "hospitalAddress", target = "address")
+    void updateFromHospitalDto(HospitalDto hospitalDto,@MappingTarget Hospital hospital);
 }
