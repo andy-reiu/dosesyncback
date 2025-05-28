@@ -15,6 +15,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class StudyInfo implements Serializable {
     private Integer studyId;
+    private Integer machineId;
+    private String machineName;
     private String studyDate;
     private Integer studyNrPatients;
     private String studyStartTime;

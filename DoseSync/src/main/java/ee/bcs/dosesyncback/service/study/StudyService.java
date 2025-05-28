@@ -2,6 +2,7 @@ package ee.bcs.dosesyncback.service.study;
 
 import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepository;
 import ee.bcs.dosesyncback.persistence.dailystudy.DailyStudy;
@@ -15,7 +16,6 @@ import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFillRepository;
 import ee.bcs.dosesyncback.persistence.study.*;
 import ee.bcs.dosesyncback.util.SimulationResult;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,20 +47,28 @@ public class StudyService {
 
     @Transactional
     public Integer addStudy(NewStudy newStudy) {
+        Study savedStudy = createAndSaveNewStudy(newStudy);
+        return savedStudy.getId();
+    }
+
+    private Study createAndSaveNewStudy(NewStudy newStudy) {
         Study study = newStudyMapper.toStudy(newStudy);
+        addStudyIsotope(newStudy, study);
+        addStudyMachine(newStudy, study);
+        study.setStatus(StudyStatus.PENDING.getCode());
+        return studyRepository.save(study);
+    }
 
-        Integer isotopeId = newStudy.getIsotopeId();
-        Isotope isotope = isotopeRepository.getReferenceById(isotopeId);
-        study.setIsotope(isotope);
-
+    private void addStudyMachine(NewStudy newStudy, Study study) {
         Integer machineId = newStudy.getMachineId();
         Machine machine = machineRepository.getReferenceById(machineId);
         study.setMachine(machine);
+    }
 
-        study.setStatus(StudyStatus.PENDING.getCode());
-
-        Study savedStudy = studyRepository.save(study);
-        return savedStudy.getId();
+    private void addStudyIsotope(NewStudy newStudy, Study study) {
+        Integer isotopeId = newStudy.getIsotopeId();
+        Isotope isotope = isotopeRepository.getReferenceById(isotopeId);
+        study.setIsotope(isotope);
     }
 
     public BigDecimal calculateStudiesMachineRinseVolume(Integer studyId) {
@@ -202,5 +210,61 @@ public class StudyService {
         List<DailyStudy> dailyStudies = dailyStudyRepository.findDailyStudiesBy(studyId);
         DailyStudy lastDailyStudy = dailyStudies.getFirst();
         return lastDailyStudy.getMachineFill().getVialActivityAfterInjection();
+    }
+
+    @Transactional
+    public void addStudyInformation(Integer studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(() -> new PrimaryKeyNotFoundException("studyId", studyId));
+        findAndSetStudyInformation(studyId, study);
+        studyRepository.save(study);
+    }
+
+    private void findAndSetStudyInformation(Integer studyId, Study study) {
+        addStudyTotalActivity(studyId, study);
+        List<DailyStudy> dailyStudies = dailyStudyRepository.findDailyStudiesBy(studyId);
+        addStudyFirstInjectionTime(dailyStudies, study);
+        addStudyLastInjectionTimeAndRinseActivity(dailyStudies, study);
+        study.setStatus(StudyStatus.COMPLETED.getCode());
+        study.setNrPatients(dailyStudies.size());
+    }
+
+    private void addStudyLastInjectionTimeAndRinseActivity(List<DailyStudy> dailyStudies, Study study) {
+        DailyStudy lastDailyStudy = dailyStudies.getFirst();
+        BigDecimal vialActivityAfterInjection = lastDailyStudy.getMachineFill().getVialActivityAfterInjection();
+        study.setCalculationMachineRinseActivity(vialActivityAfterInjection);
+        LocalTime lastInjectedTime = lastDailyStudy.getInjection().getInjectedTime();
+        study.setEndTime(lastInjectedTime);
+    }
+
+    private void addStudyFirstInjectionTime(List<DailyStudy> dailyStudies, Study study) {
+        DailyStudy firstDailyStudy = dailyStudies.getLast();
+        LocalTime firstInjectedTime = firstDailyStudy.getInjection().getInjectedTime();
+        study.setStartTime(firstInjectedTime);
+    }
+
+    private void addStudyTotalActivity(Integer studyId, Study study) {
+        List<CalculationProfile> calculationProfiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
+        CalculationProfile calculationProfilesFirst = calculationProfiles.getFirst();
+        study.setTotalActivity(calculationProfilesFirst.getCalibratedActivity());
+    }
+
+    @Transactional
+    public void updatePendingStudyInformation(Integer studyId, NewStudy newStudy) {
+        Study study = studyRepository.getReferenceById(studyId);
+        newStudyMapper.updateStudy(study, newStudy);
+
+        Machine machine = machineRepository.getReferenceById(newStudy.getMachineId());
+        study.setMachine(machine);
+
+        Isotope isotope = isotopeRepository.getReferenceById(newStudy.getIsotopeId());
+        study.setIsotope(isotope);
+
+        studyRepository.save(study);
+    }
+
+    @Transactional
+    public void removePendingStudy(Integer studyId) {
+        Study study = studyRepository.getReferenceById(studyId);
+        studyRepository.delete(study);
     }
 }
