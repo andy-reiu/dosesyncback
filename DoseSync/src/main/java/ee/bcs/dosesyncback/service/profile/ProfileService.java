@@ -1,0 +1,30 @@
+package ee.bcs.dosesyncback.service.profile;
+
+import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
+import ee.bcs.dosesyncback.persistence.profile.Profile;
+import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
+import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
+import ee.bcs.dosesyncback.persistence.study.Study;
+import ee.bcs.dosesyncback.persistence.study.StudyRepository;
+import ee.bcs.dosesyncback.persistence.user.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class ProfileService {
+
+    private final ProfileRepository profileRepository;
+    private final ProfileMapper profileMapper;
+    private final StudyRepository studyRepository;
+
+    public ProfileStudyInfo getProfile(Integer studyId) {
+        Study study = studyRepository.getReferenceById(studyId);
+        Integer userId = study.getUser().getId();
+        Profile profile = profileRepository.findProfileBy(userId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+        return profileMapper.toProfileStudyInfo(profile);
+    }
+}
