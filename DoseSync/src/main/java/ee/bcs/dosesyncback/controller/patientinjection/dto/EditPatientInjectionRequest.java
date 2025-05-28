@@ -11,8 +11,9 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewPatientInjectionRequest {
+public class EditPatientInjectionRequest {
     private Integer studyId;
+    private Integer injectionId;
     private String patientNationalId;
     private String acc;
     private BigDecimal injectionWeight;

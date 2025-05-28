@@ -12,6 +12,8 @@ import java.util.List;
 public interface StudyMapper {
 
     @Mapping(source = "id", target = "studyId")
+    @Mapping(source = "machine.id", target = "machineId")
+    @Mapping(source = "machine.name", target = "machineName")
     @Mapping(source = "date", target = "studyDate", qualifiedByName = "dateToString")
     @Mapping(source = "nrPatients", target = "studyNrPatients")
     @Mapping(source = "startTime", target = "studyStartTime", qualifiedByName = "timeToString")
@@ -21,7 +23,6 @@ public interface StudyMapper {
     @Mapping(source = "status", target = "studyStatus")
     @Mapping(source = "calculationMachineRinseVolume", target = "calculationMachineRinseVolume")
     @Mapping(source = "calculationMachineRinseActivity", target = "calculationMachineRinseActivity")
-    //@Mapping(constant = "", target = "isotopeName")
     @Mapping(source = "isotope.id", target = "isotopeId")
     @Mapping(source = "isotope.name", target = "isotopeName")
     StudyInfo toStudyInfo(Study study);

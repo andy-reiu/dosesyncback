@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.controller.patientinjection;
 
+import ee.bcs.dosesyncback.controller.patientinjection.dto.EditPatientInjectionRequest;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.NewPatientInjectionRequest;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionInfo;
 import ee.bcs.dosesyncback.service.patientinjection.PatientInjectionService;
@@ -25,9 +26,34 @@ public class PatientInjectionController {
 
     @PostMapping("/patient-injection")
     @Operation(
-            summary = "Lisab patsiendi süstimise.",
+            summary = "Lisab patsiendi süstimist.",
             description = "Ei tagasta midagi.")
-    public void newPatientInjection(@RequestBody NewPatientInjectionRequest newPatientInjectionRequest) {
-        patientInjectionService.newPatientInjection(newPatientInjectionRequest);
+    public void addPatientInjection(@RequestParam Integer isotopeId, @RequestBody NewPatientInjectionRequest newPatientInjectionRequest) {
+        patientInjectionService.addPatientInjection(isotopeId, newPatientInjectionRequest);
+    }
+
+    @PutMapping("/patient-injection")
+    @Operation(
+            summary = "Uuendab patsiendi süstimist.",
+            description = "Ei tagasta midagi.")
+    public void updatePatientInjection(@RequestParam Integer studyId,
+                                       @RequestBody EditPatientInjectionRequest editPatientInjectionRequest) {
+        patientInjectionService.updatePatientInjection(studyId, editPatientInjectionRequest);
+    }
+
+    @DeleteMapping("/patient-injection")
+    @Operation(
+            summary = "Kustutab patsiendi süstimise koos machine filliga.",
+            description = "Ei tagasta midagi.")
+    public void removePatientInjection(@RequestParam Integer patientInjectionId) {
+        patientInjectionService.removePatientInjection(patientInjectionId);
+    }
+
+    @GetMapping("/patient-injection/template")
+    @Operation(
+            summary = "Kasutab kalkulatsiooni sätteid nii koostab patsiendi süstimise template.",
+            description = "Tagastab template patsiendi süstimisest vajalike väljadega.")
+    public NewPatientInjectionRequest getStudyPatientInjectionTemplate(@RequestParam Integer studyId) {
+        return patientInjectionService.getStudyPatientInjectionTemplate(studyId);
     }
 }

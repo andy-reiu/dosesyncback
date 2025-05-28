@@ -4,6 +4,7 @@ import ee.bcs.dosesyncback.controller.user.dto.UserDto;
 import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,4 +24,10 @@ return userDtos;
 
 }
 
+@Transactional
+    public Integer createUser(UserDto userDto) {
+    User user = userMapper.toUser(userDto);
+    User savedUser = userRepository.save(user);
+    return savedUser.getId();
+}
 }

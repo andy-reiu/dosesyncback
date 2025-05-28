@@ -20,9 +20,9 @@ public class Injection {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 12)
+    @Size(max = 16)
     @NotNull
-    @Column(name = "acc", nullable = false, length = 12)
+    @Column(name = "acc", nullable = false, length = 16)
     private String acc;
 
     @NotNull
