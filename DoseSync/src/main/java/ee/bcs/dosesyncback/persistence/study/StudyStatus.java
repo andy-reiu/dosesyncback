@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum StudyStatus {
-    PENDING("A"),
-    IN_PROGRESS("B"),
-    COMPLETED("D");
+    PENDING("P"),
+    IN_PROGRESS("I"),
+    COMPLETED("C");
     private final String code;
 }
