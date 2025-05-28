@@ -5,7 +5,8 @@ import org.mapstruct.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = MappingConstants.ComponentModel.SPRING)
 public interface IsotopeMapper {
     @Mapping(source = "id", target = "isotopeId")
     @Mapping(source = "name", target = "isotopeName")
@@ -24,4 +25,10 @@ public interface IsotopeMapper {
     Isotope toIsotope(IsotopeDto isotopeDto);
 
     List<Isotope> toIsotopes(List<IsotopeDto> isotopeDtos);
+
+    @Mapping(ignore = true, target = "id")
+    @Mapping(source = "isotopeName", target = "name")
+    @Mapping(source = "halfLifeHr", target = "halfLifeHr")
+    @Mapping(source = "unit", target = "unit")
+    void updateFromIsotopeDto(IsotopeDto isotopeDto,@MappingTarget Isotope isotope);
 }

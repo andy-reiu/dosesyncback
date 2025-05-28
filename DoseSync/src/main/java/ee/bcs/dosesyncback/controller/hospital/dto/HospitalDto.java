@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.persistence.hospital;
+package ee.bcs.dosesyncback.controller.hospital.dto;
 
 import lombok.*;
 
