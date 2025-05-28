@@ -14,20 +14,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-private final UserRepository userRepository;
-private final UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-public List<UserDto> getAllUsers(){
-List<User> users = userRepository.findAll();
-List<UserDto> userDtos = userMapper.toUserDtos(users);
-return userDtos;
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = userMapper.toUserDtos(users);
+        return userDtos;
 
-}
+    }
 
-@Transactional
+    @Transactional
     public Integer createUser(UserDto userDto) {
-    User user = userMapper.toUser(userDto);
-    User savedUser = userRepository.save(user);
-    return savedUser.getId();
-}
+        User user = userMapper.toUser(userDto);
+        User savedUser = userRepository.save(user);
+        return savedUser.getId();
+    }
 }

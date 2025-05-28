@@ -33,6 +33,14 @@ public class StudyController {
         return studyService.addStudy(newStudy);
     }
 
+    @GetMapping("/study")
+    @Operation(
+            summary = "Leiab vastava study",
+            description = "Tagastab kogu study")
+    public StudyInfo getStudy(@RequestParam Integer studyId) {
+        return studyService.getStudy(studyId);
+    }
+
     @GetMapping("/study/machine-rinse-volume")
     @Operation(
             summary = "Tagastab kogu uuringu kalkuleeritud Karli loputusmahu.",

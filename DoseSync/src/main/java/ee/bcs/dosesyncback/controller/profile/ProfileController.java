@@ -1,6 +1,7 @@
 package ee.bcs.dosesyncback.controller.profile;
 
 
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileDto;
 import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
@@ -9,6 +10,7 @@ import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,8 +30,11 @@ public class ProfileController {
         return profileDtos;
     }
 
-
+    @GetMapping("/profile")
+    public ProfileStudyInfo getProfile(@RequestParam Integer studyId){
+        return profileService.getProfile(studyId);
     }
+}
 
 
 
