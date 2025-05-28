@@ -1,18 +1,11 @@
 package ee.bcs.dosesyncback.controller.user.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Value;
+import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link ee.bcs.dosesyncback.persistence.role.Role}
- */
-@Value
+@Data
 public class RoleDto implements Serializable {
     Integer id;
-    @NotNull
-    @Size(max = 10)
     String name;
 }
