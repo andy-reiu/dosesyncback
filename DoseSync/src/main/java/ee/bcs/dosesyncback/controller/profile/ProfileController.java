@@ -2,10 +2,7 @@ package ee.bcs.dosesyncback.controller.profile;
 
 
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
-import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileDto;
-import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
-import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
 import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +28,7 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public ProfileStudyInfo getProfile(@RequestParam Integer studyId){
+    public ProfileStudyInfo getProfile(@RequestParam Integer studyId) {
         return profileService.getProfile(studyId);
     }
 }
