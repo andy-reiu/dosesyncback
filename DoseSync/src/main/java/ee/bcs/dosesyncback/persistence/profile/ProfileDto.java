@@ -3,6 +3,7 @@ package ee.bcs.dosesyncback.persistence.profile;
 import ee.bcs.dosesyncback.controller.hospital.dto.HospitalDto;
 import ee.bcs.dosesyncback.controller.user.dto.UserDto;
 import jakarta.validation.constraints.NotNull;
+import ee.bcs.dosesyncback.controller.hospital.dto.HospitalDto;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 

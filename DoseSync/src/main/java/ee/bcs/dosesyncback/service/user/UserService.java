@@ -1,6 +1,7 @@
 package ee.bcs.dosesyncback.service.user;
 
 import ee.bcs.dosesyncback.controller.user.dto.UserDto;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
@@ -28,5 +29,17 @@ public class UserService {
         User user = userMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return savedUser.getId();
+    }
+
+    public UserDto findUser(Integer userId) {
+        User user = getValidUserBy(userId);
+        UserDto userDto = userMapper.toUserDto(user);
+        return userDto;
+    }
+
+    private User getValidUserBy(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException("userId", userId));
+        return user;
     }
 }

@@ -36,11 +36,18 @@ public class UserController {
 
     }
 
+    @GetMapping("/user")
+    @Operation(summary = "Tagastab üksiku kasutaja infot.")
+    public UserDto findUser(@RequestParam Integer userId) {
+        UserDto userDto = userService.findUser(userId);
+        return userDto;
+    }
+
     @PostMapping("/users")
     @Operation(
             summary = "Lisab uue kasutja.",
             description = "Tagastab uue kasutaja userId")
-    public Integer createUser(@RequestBody UserDto userDto){
+    public Integer createUser(@RequestBody UserDto userDto) {
         return userService.createUser(new UserDto());
     }
 
