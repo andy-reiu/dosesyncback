@@ -2,10 +2,7 @@ package ee.bcs.dosesyncback.controller.profile;
 
 
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
-import ee.bcs.dosesyncback.persistence.profile.Profile;
-import ee.bcs.dosesyncback.persistence.profile.ProfileDto;
-import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
-import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +31,21 @@ public class ProfileController {
     public ProfileStudyInfo getProfile(@RequestParam Integer studyId){
         return profileService.getProfile(studyId);
     }
+
+
+    @GetMapping("/userprofile")
+    public ProfileDto getUserProfile(@RequestParam Integer userId){
+        return profileService.getUserProfile(userId);
+    }
+
 }
+
+//    @GetMapping("/user")
+//    @Operation(summary = "Tagastab üksiku kasutaja infot.")
+//    public UserDto findUser(@RequestParam Integer userId) {
+//        UserDto userDto = userService.findUser(userId);
+//        return userDto;
+//    }
 
 
 
