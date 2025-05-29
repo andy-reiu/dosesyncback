@@ -29,6 +29,7 @@ public interface StudyMapper {
 
     List<StudyInfo> toStudyInfos(List<Study> studies);
 
+
     @Named("dateToString")
     static String mapDate(LocalDate localDate) {
         return DateTimeConverter.localDateToString(localDate);

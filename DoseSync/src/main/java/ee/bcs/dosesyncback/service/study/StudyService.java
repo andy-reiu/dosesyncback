@@ -267,4 +267,9 @@ public class StudyService {
         Study study = studyRepository.getReferenceById(studyId);
         studyRepository.delete(study);
     }
+
+    public StudyInfo getStudy(Integer studyId) {
+        Study study = studyRepository.getReferenceById(studyId);
+        return studyMapper.toStudyInfo(study);
+    }
 }
