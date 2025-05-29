@@ -6,12 +6,10 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel       = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MachineMapper {
-;
     @Mapping(source = "machineId", target = "id")
     @Mapping(source = "hospitalId", target = "hospital.id")
     @Mapping(source = "machineName", target = "name")
