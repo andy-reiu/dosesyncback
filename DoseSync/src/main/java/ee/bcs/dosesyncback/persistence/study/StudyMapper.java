@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.persistence.study;
 
+import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
 import ee.bcs.dosesyncback.util.DateTimeConverter;
 import org.mapstruct.*;
@@ -28,6 +29,15 @@ public interface StudyMapper {
     StudyInfo toStudyInfo(Study study);
 
     List<StudyInfo> toStudyInfos(List<Study> studies);
+
+
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "studyDate", target = "date")
+    Study toStudy(NewStudy newStudy);
+
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "studyDate", target = "date")
+    void updateStudy(@MappingTarget Study study, NewStudy newStudy);
 
 
     @Named("dateToString")

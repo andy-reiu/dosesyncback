@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.controller.patientinjection.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import ee.bcs.dosesyncback.persistence.injection.Injection;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,6 +24,7 @@ public class PatientInjectionInfo implements Serializable {
     private String patientNationalId;
     private BigDecimal injectionWeight;
     private BigDecimal injectionMbqKg;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime injectedTime;
     private BigDecimal injectedActivity;
 }

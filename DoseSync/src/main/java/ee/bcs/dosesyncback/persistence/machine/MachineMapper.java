@@ -1,5 +1,7 @@
 package ee.bcs.dosesyncback.persistence.machine;
 
+import ee.bcs.dosesyncback.controller.machine.dto.MachineDto;
+import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -37,5 +39,9 @@ public interface MachineMapper {
 
     void updateFromMachineDto(MachineDto machineDto, @MappingTarget Machine machine);
 
+    @Mapping(source = "id", target = "machineId")
+    @Mapping(source = "name", target = "machineName")
+    MachineInfo toMachineInfo(Machine machine);
 
+    List<MachineInfo> toMachineInfos(List<Machine> machine);
 }

@@ -1,8 +1,9 @@
 package ee.bcs.dosesyncback.persistence.isotope;
 
+import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeDto;
+import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
 import org.mapstruct.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -31,4 +32,10 @@ public interface IsotopeMapper {
     @Mapping(source = "halfLifeHr", target = "halfLifeHr")
     @Mapping(source = "unit", target = "unit")
     void updateFromIsotopeDto(IsotopeDto isotopeDto,@MappingTarget Isotope isotope);
+
+    @Mapping(source = "id", target = "isotopeId")
+    @Mapping(source = "name", target = "isotopeName")
+    IsotopeInfo toIsotopeInfo(Isotope isotope);
+
+    List<IsotopeInfo> toIsotopeInfos(List<Isotope> isotope);
 }

@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.persistence.isotope;
+package ee.bcs.dosesyncback.controller.isotope.dto;
 
 import lombok.*;
 

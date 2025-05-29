@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.service.machine;
 
+import ee.bcs.dosesyncback.controller.machine.dto.MachineDto;
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
@@ -7,7 +8,6 @@ import ee.bcs.dosesyncback.persistence.hospital.Hospital;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.machine.*;
 import jakarta.transaction.Transactional;
-import ee.bcs.dosesyncback.persistence.machine.MachineInfoMapper;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +25,11 @@ public class MachineService {
 
     private final MachineRepository machineRepository;
     private final MachineMapper machineMapper;
-    private final MachineInfoMapper machineInfoMapper;
     private final HospitalRepository hospitalRepository;
 
     public List<MachineInfo> getAllActiveMachines() {
         List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
-        List<MachineInfo> machineInfos = machineInfoMapper.toMachineInfos(machines);
+        List<MachineInfo> machineInfos = machineMapper.toMachineInfos(machines);
 
         return machineInfos;
     }

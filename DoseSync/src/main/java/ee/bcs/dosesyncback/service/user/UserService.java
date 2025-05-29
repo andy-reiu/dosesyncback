@@ -22,7 +22,6 @@ public class UserService {
         List<User> users = userRepository.findAll();
         List<UserDto> userDtos = userMapper.toUserDtos(users);
         return userDtos;
-
     }
 
     @Transactional
