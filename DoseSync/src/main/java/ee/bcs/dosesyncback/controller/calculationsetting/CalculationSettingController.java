@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.controller.calculationsetting;
 
-import ee.bcs.dosesyncback.infrastructure.error.ApiError;
 import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
+import ee.bcs.dosesyncback.infrastructure.error.ApiError;
 import ee.bcs.dosesyncback.service.calculationsetting.CalculationSettingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RequestMapping("/calculation-setting")
@@ -44,7 +43,6 @@ public class CalculationSettingController {
     public ResponseEntity<CalculationSettingDto> updateCalculationSetting(@PathVariable Integer id,
                                                                           @RequestBody CalculationSettingDto calculationSettingDto) {
         CalculationSettingDto updatedCalculationSetting = calculationSettingService.updateCalculationSetting(id, calculationSettingDto);
-
         return ResponseEntity.ok(updatedCalculationSetting);
 
     }
