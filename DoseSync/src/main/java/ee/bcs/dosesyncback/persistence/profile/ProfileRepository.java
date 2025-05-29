@@ -14,18 +14,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Integer> {
     Optional<Profile> findProfileBy(Integer userId);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Optional<Profile> findByUserId(Integer userId);
 
 }

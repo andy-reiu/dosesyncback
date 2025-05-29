@@ -42,9 +42,9 @@ public class MachineService {
         return machineDtos;
     }
 
-    public MachineDto getMachineById(int id) {
-        Machine machine = machineRepository.findById(id)
-                .orElseThrow(() -> new ResourceAccessException("Obj not found"));
+    public MachineDto getMachineById(int machineId) {
+        Machine machine = machineRepository.findById(machineId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("machineId"), machineId));
 
         return machineMapper.toMachineDto(machine);
     }
@@ -69,7 +69,7 @@ public class MachineService {
     }
 
     @Transactional
-    public MachineDto updateMachineStatus(int id, String status) {
+    public MachineDto updateMachineStatus(Integer id, String status) {
         Machine machine = machineRepository.findById(id)
                 .orElseThrow(() -> new ForeignKeyNotFoundException(("id"), id));
         machine.setStatus(status);
@@ -79,9 +79,9 @@ public class MachineService {
     }
 
     @Transactional
-    public MachineDto updateMachine(Integer id, MachineDto machineDto) {
-        Machine machine = machineRepository.findById(id)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("id"), id));
+    public MachineDto updateMachine(Integer machineId, MachineDto machineDto) {
+        Machine machine = machineRepository.findById(machineId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("machineId"), machineId));
         machineMapper.updateFromMachineDto(machineDto, machine);
         if(machineDto.getHospitalId() != null){
             Hospital hospital = hospitalRepository.findById(machineDto.getHospitalId())
