@@ -1,7 +1,6 @@
 package ee.bcs.dosesyncback.persistence.injection;
 
-import ee.bcs.dosesyncback.controller.patientinjection.dto.EditPatientInjectionRequest;
-import ee.bcs.dosesyncback.controller.patientinjection.dto.NewPatientInjectionRequest;
+import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionDto;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionInfo;
 import org.mapstruct.*;
 
@@ -24,12 +23,12 @@ public interface PatientInjectionMapper {
     @Mapping(source = "injectionMbqKg", target = "mbqKg")
     @Mapping(source = "injectedTime", target = "injectedTime")
     @Mapping(source = "injectedActivity", target = "injectedActivity")
-    Injection toInjection(NewPatientInjectionRequest newPatientInjectionRequest);
+    Injection toInjection(PatientInjectionDto patientInjectionDto);
 
     @Mapping(source = "acc", target = "acc")
     @Mapping(source = "injectionWeight", target = "weight")
     @Mapping(source = "injectionMbqKg", target = "mbqKg")
     @Mapping(source = "injectedTime", target = "injectedTime")
     @Mapping(source = "injectedActivity", target = "injectedActivity")
-    Injection toUpdateInjection(EditPatientInjectionRequest editPatientInjectionRequest, @MappingTarget Injection injection);
+    Injection toUpdateInjection(PatientInjectionDto patientInjectionDto, @MappingTarget Injection injection);
 }

@@ -1,6 +1,5 @@
 package ee.bcs.dosesyncback.controller.study;
 
-import ee.bcs.dosesyncback.controller.patientinjection.dto.EditPatientInjectionRequest;
 import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
 import ee.bcs.dosesyncback.service.study.StudyService;
@@ -62,7 +61,7 @@ public class StudyController {
             summary = "Võtab vajalikkudest kohtadest andmeread ning täidab käimasoleva study andmed. " +
                     "Märgib uuringu kui completed.",
             description = "Ei tagasta midagi, salvestab study andmebaasi.")
-    public void addStudyInformation(@RequestParam Integer studyId){
+    public void addStudyInformation(@RequestParam Integer studyId) {
         studyService.addStudyInformation(studyId);
     }
 

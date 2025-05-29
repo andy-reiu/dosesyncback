@@ -11,13 +11,12 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewPatientInjectionRequest {
+public class PatientInjectionDto {
     private Integer studyId;
     private String patientNationalId;
     private String acc;
     private BigDecimal injectionWeight;
     private BigDecimal injectionMbqKg;
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime injectedTime;
     private BigDecimal injectedActivity;
 }
