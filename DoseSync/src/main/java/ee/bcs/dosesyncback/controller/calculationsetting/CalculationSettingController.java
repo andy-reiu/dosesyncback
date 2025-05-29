@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.controller.calculationsetting;
 
 import ee.bcs.dosesyncback.infrastructure.error.ApiError;
-import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingDto;
+import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
 import ee.bcs.dosesyncback.service.calculationsetting.CalculationSettingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

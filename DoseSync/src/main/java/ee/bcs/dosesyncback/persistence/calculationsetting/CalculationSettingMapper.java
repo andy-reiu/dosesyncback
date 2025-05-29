@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.persistence.calculationsetting;
 
+import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -47,5 +48,5 @@ public interface CalculationSettingMapper {
     @Mapping(source = "injectionInterval", target = "injectionInterval")
     @Mapping(source = "defaultPatientWeight", target = "defaultPatientWeight")
     @Mapping(source = "activityPerKg", target = "activityPerKg")
-    void updateFromCalculationSettingDto(CalculationSettingDto calculationSettingDto,@MappingTarget CalculationSetting calculationSetting);
+    void updateFromCalculationSettingDto(CalculationSettingDto calculationSettingDto, @MappingTarget CalculationSetting calculationSetting);
 }

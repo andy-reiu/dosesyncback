@@ -2,7 +2,7 @@ package ee.bcs.dosesyncback.service.calculationsetting;
 
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSetting;
-import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingDto;
+import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingMapper;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingRepository;
 import jakarta.transaction.Transactional;

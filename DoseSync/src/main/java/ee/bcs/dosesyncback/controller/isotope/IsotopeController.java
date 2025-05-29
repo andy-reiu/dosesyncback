@@ -3,7 +3,7 @@ package ee.bcs.dosesyncback.controller.isotope;
 import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
 import ee.bcs.dosesyncback.infrastructure.error.ApiError;
 import ee.bcs.dosesyncback.persistence.isotope.Isotope;
-import ee.bcs.dosesyncback.persistence.isotope.IsotopeDto;
+import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeDto;
 import ee.bcs.dosesyncback.service.isotope.IsotopeService;
 import ee.bcs.dosesyncback.service.machine.MachineService;
 import io.swagger.v3.oas.annotations.Operation;

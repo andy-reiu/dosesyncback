@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.persistence.calculationsetting;
+package ee.bcs.dosesyncback.controller.calculationsetting.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSetter;
