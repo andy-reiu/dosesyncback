@@ -1,4 +1,4 @@
-package ee.bcs.dosesyncback.persistence.profile;
+package ee.bcs.dosesyncback.controller.profile.dto;
 
 import ee.bcs.dosesyncback.controller.hospital.dto.HospitalDto;
 import ee.bcs.dosesyncback.controller.user.dto.UserDto;
@@ -13,9 +13,7 @@ import java.time.Instant;
 public class ProfileDto implements Serializable {
     Integer profileId;
     @NotNull
-    UserDto user;
-    @NotNull
-    HospitalDto hospital;
+    String hospitalName;
     @Size(max = 255)
     String occupation;
     @NotNull

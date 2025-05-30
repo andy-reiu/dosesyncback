@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.persistence.profile;
 
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalMapper;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
@@ -10,6 +11,7 @@ import java.util.List;
 public interface ProfileMapper {
     @Mapping(source = "id",target = "profileId")
     @Mapping(source = "occupation",target = "occupation")
+    @Mapping(source = "hospital.name",target = "hospitalName")
     @Mapping(source = "nationalId",target = "nationalId")
     @Mapping(source = "firstName",target = "firstName")
     @Mapping(source = "lastName",target = "lastName")
