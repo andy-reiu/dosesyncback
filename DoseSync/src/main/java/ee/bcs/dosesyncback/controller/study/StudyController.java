@@ -2,6 +2,7 @@ package ee.bcs.dosesyncback.controller.study;
 
 import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
+import ee.bcs.dosesyncback.controller.study.dto.StudyResult;
 import ee.bcs.dosesyncback.service.study.StudyService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,14 @@ public class StudyController {
             description = "Tagastab kogu study")
     public StudyInfo getStudy(@RequestParam Integer studyId) {
         return studyService.getStudy(studyId);
+    }
+
+    @GetMapping("/study/result")
+    @Operation(
+            summary = "Leiab vastava study tulemuse",
+            description = "Tagastab study tulemuse")
+    public StudyResult getStudyResult(@RequestParam Integer studyId) {
+        return studyService.getStudyResult(studyId);
     }
 
     @GetMapping("/study/machine-rinse-volume")
@@ -80,4 +89,12 @@ public class StudyController {
     public void removePendingStudy(@RequestParam Integer studyId) {
         studyService.removePendingStudy(studyId);
     }
+
+//    @DeleteMapping("/study/all")
+//    @Operation(
+//            summary = "Kustutab kõik uuringuga seonduva",
+//            description = "Ei tagasta midagi.")
+//    public void removeStudy(@RequestParam Integer studyId) {
+//        studyService.removeStudy(studyId);
+//    }
 }
