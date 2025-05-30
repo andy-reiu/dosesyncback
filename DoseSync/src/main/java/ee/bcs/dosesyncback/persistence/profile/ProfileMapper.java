@@ -2,6 +2,7 @@ package ee.bcs.dosesyncback.persistence.profile;
 
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalMapper;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
 import org.mapstruct.*;
@@ -26,5 +27,19 @@ public interface ProfileMapper {
     @Mapping(source = "hospital.name", target = "hospitalName")
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
+
     ProfileStudyInfo toProfileStudyInfo(Profile profile);
+
+    @Mapping(source = "id", target = "profileId")
+    @Mapping(source = "firstName", target = "firstName")
+    @Mapping(source = "lastName", target = "lastName")
+    @Mapping(source = "occupation", target = "occupation")
+    @Mapping(source = "nationalId", target = "nationalId")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    ProfileUpdateInfo toProfileUpdateInfo(Profile profile);
+
+
+
+
 }

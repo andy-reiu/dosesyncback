@@ -3,15 +3,14 @@ package ee.bcs.dosesyncback.controller.profile;
 
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class ProfileController {
@@ -38,6 +37,15 @@ public class ProfileController {
         return profileService.getUserProfile(userId);
     }
 
+    @GetMapping("/profile-current")
+    public ProfileUpdateInfo getCurrentUserProfile(@RequestParam Integer profileId) {
+        return profileService.getCurrentUserProfile(profileId);
+    }
+
+    @PutMapping("/profile-update")
+    public void updateProfile(@RequestBody ProfileUpdateInfo profileUpdateInfo) {
+        profileService.updateProfile(profileUpdateInfo);
+    }
 }
 
 
