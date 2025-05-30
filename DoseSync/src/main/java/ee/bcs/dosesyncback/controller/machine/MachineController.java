@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.controller.machine;
 
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
-import ee.bcs.dosesyncback.persistence.machine.MachineDto;
+import ee.bcs.dosesyncback.controller.machine.dto.MachineDto;
 import ee.bcs.dosesyncback.service.machine.MachineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

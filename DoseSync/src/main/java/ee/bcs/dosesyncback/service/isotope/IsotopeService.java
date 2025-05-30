@@ -1,5 +1,6 @@
 package ee.bcs.dosesyncback.service.isotope;
 
+import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeDto;
 import ee.bcs.dosesyncback.controller.isotope.dto.IsotopeInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
@@ -16,12 +17,11 @@ import java.util.List;
 public class IsotopeService {
 
     private final IsotopeRepository isotopeRepository;
-    private final IsotopeInfoMapper isotopeInfoMapper;
     private final IsotopeMapper isotopeMapper;
 
     public List<IsotopeInfo> getAllActiveIsotopes() {
         List<Isotope> isotopes = isotopeRepository.findIsotopesBy(IsotopeStatus.ACTIVE.getCode());
-        List<IsotopeInfo> isotopeInfos = isotopeInfoMapper.toIsotopeInfos(isotopes);
+        List<IsotopeInfo> isotopeInfos = isotopeMapper.toIsotopeInfos(isotopes);
 
         return isotopeInfos;
     }

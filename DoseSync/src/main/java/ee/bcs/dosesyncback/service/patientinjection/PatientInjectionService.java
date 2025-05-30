@@ -1,7 +1,6 @@
 package ee.bcs.dosesyncback.service.patientinjection;
 
-import ee.bcs.dosesyncback.controller.patientinjection.dto.EditPatientInjectionRequest;
-import ee.bcs.dosesyncback.controller.patientinjection.dto.NewPatientInjectionRequest;
+import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionDto;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
@@ -66,12 +65,12 @@ public class PatientInjectionService {
     }
 
     @Transactional
-    public void addPatientInjection(Integer isotopeId, NewPatientInjectionRequest newPatientInjectionRequest) {
+    public void addPatientInjection(Integer isotopeId, PatientInjectionDto patientInjectionDto) {
 
-        Integer studyId = newPatientInjectionRequest.getStudyId();
+        Integer studyId = patientInjectionDto.getStudyId();
         Study study = studyRepository.getReferenceById(studyId);
-        Injection injection = createAndSaveInjection(newPatientInjectionRequest);
-        Patient patient = createAndSavePatient(newPatientInjectionRequest);
+        Injection injection = createAndSaveInjection(patientInjectionDto);
+        Patient patient = createAndSavePatient(patientInjectionDto);
 
         double halfLifeDays = getStudiesIsotopeHalfLifeDays(isotopeId);
         BigDecimal vialVolume = Optional.ofNullable(study.getCalculationMachineRinseVolume())
@@ -168,8 +167,8 @@ public class PatientInjectionService {
         return halfLifeDaysBD.doubleValue();
     }
 
-    private Patient createAndSavePatient(NewPatientInjectionRequest newPatientInjectionRequest) {
-        String patientNationalId = newPatientInjectionRequest.getPatientNationalId();
+    private Patient createAndSavePatient(PatientInjectionDto patientInjectionDto) {
+        String patientNationalId = patientInjectionDto.getPatientNationalId();
         return patientRepository.findPatientBy(patientNationalId)
                 .orElseGet(() -> saveNewPatient(patientNationalId));
     }
@@ -180,25 +179,23 @@ public class PatientInjectionService {
         return patientRepository.save(newPatient);
     }
 
-    private Injection createAndSaveInjection(NewPatientInjectionRequest newPatientInjectionRequest) {
-        Injection injection = patientInjectionMapper.toInjection(newPatientInjectionRequest);
+    private Injection createAndSaveInjection(PatientInjectionDto patientInjectionDto) {
+        Injection injection = patientInjectionMapper.toInjection(patientInjectionDto);
         injectionRepository.save(injection);
         return injection;
     }
 
     @Transactional
-    public void updatePatientInjection(Integer studyId, EditPatientInjectionRequest editPatientInjectionRequest) {
-
-        Integer injectionId = editPatientInjectionRequest.getInjectionId();
+    public void updatePatientInjection(Integer injectionId, PatientInjectionDto patientInjectionDto) {
 
         Injection injection = injectionRepository.getReferenceById(injectionId);
-        Injection updateInjection = patientInjectionMapper.toUpdateInjection(editPatientInjectionRequest, injection);
+        Injection updateInjection = patientInjectionMapper.toUpdateInjection(patientInjectionDto, injection);
         injectionRepository.save(updateInjection);
 
         DailyStudy dailyStudy = dailyStudyRepository.findDailyStudyBy(injectionId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("injectionId",injectionId));
+                .orElseThrow(() -> new ForeignKeyNotFoundException("injectionId", injectionId));
 
-        String nationalId = editPatientInjectionRequest.getPatientNationalId();
+        String nationalId = patientInjectionDto.getPatientNationalId();
         Patient patient = patientRepository.findPatientBy(nationalId)
                 .orElseGet(() -> saveNewPatient(nationalId));
 
@@ -206,7 +203,7 @@ public class PatientInjectionService {
             dailyStudy.setPatient(patient);
             dailyStudyRepository.save(dailyStudy);
         }
-        recalculateMachineFillsForStudy(studyId);
+        recalculateMachineFillsForStudy(patientInjectionDto.getStudyId());
     }
 
     @Transactional
@@ -297,33 +294,33 @@ public class PatientInjectionService {
         }
     }
 
-    public NewPatientInjectionRequest getStudyPatientInjectionTemplate(Integer studyId) {
-        NewPatientInjectionRequest newPatientInjectionRequest = new NewPatientInjectionRequest();
-        newPatientInjectionRequest.setStudyId(studyId);
-        newPatientInjectionRequest.setPatientNationalId("");
-        getNewAcc(newPatientInjectionRequest);
+    public PatientInjectionDto getStudyPatientInjectionTemplate(Integer studyId) {
+        PatientInjectionDto patientInjectionDto = new PatientInjectionDto();
+        patientInjectionDto.setStudyId(studyId);
+        patientInjectionDto.setPatientNationalId("");
+        getNewAcc(patientInjectionDto);
         List<CalculationSetting> calculationSettings = calculationSettingRepository.findAll();
         CalculationSetting calculationSetting = calculationSettings.getFirst();
-        getNewInjectedActivity(calculationSetting, newPatientInjectionRequest);
-        getNewInjectionTime(studyId, calculationSetting, newPatientInjectionRequest);
-        return newPatientInjectionRequest;
+        getNewInjectedActivity(calculationSetting, patientInjectionDto);
+        getNewInjectionTime(studyId, calculationSetting, patientInjectionDto);
+        return patientInjectionDto;
     }
 
-    private void getNewInjectedActivity(CalculationSetting calculationSetting, NewPatientInjectionRequest newPatientInjectionRequest) {
-        BigDecimal defaultPatientWeight = getBigDecimal(calculationSetting, newPatientInjectionRequest);
+    private void getNewInjectedActivity(CalculationSetting calculationSetting, PatientInjectionDto patientInjectionDto) {
+        BigDecimal defaultPatientWeight = getBigDecimal(calculationSetting, patientInjectionDto);
         BigDecimal defaultActivityPerKg = calculationSetting.getActivityPerKg();
-        newPatientInjectionRequest.setInjectionMbqKg(defaultActivityPerKg);
-        newPatientInjectionRequest.setInjectedActivity(defaultActivityPerKg.multiply(defaultPatientWeight));
+        patientInjectionDto.setInjectionMbqKg(defaultActivityPerKg);
+        patientInjectionDto.setInjectedActivity(defaultActivityPerKg.multiply(defaultPatientWeight));
     }
 
-    private void getNewInjectionTime(Integer studyId, CalculationSetting calculationSetting, NewPatientInjectionRequest newPatientInjectionRequest) {
+    private void getNewInjectionTime(Integer studyId, CalculationSetting calculationSetting, PatientInjectionDto patientInjectionDto) {
         LocalTime startTime;
         if (isFirstDailyStudy(studyId)) {
             startTime = getInjectionTimeFromCalculationProfile(studyId);
         } else {
             startTime = getInjectionTimeFromPreviousInjection(studyId, calculationSetting);
         }
-        newPatientInjectionRequest.setInjectedTime(startTime);
+        patientInjectionDto.setInjectedTime(startTime);
     }
 
     private LocalTime getInjectionTimeFromPreviousInjection(Integer studyId, CalculationSetting calculationSetting) {
@@ -345,15 +342,15 @@ public class PatientInjectionService {
         return startTime;
     }
 
-    private BigDecimal getBigDecimal(CalculationSetting calculationSetting, NewPatientInjectionRequest newPatientInjectionRequest) {
+    private BigDecimal getBigDecimal(CalculationSetting calculationSetting, PatientInjectionDto patientInjectionDto) {
         BigDecimal defaultPatientWeight = BigDecimal.valueOf(calculationSetting.getDefaultPatientWeight());
-        newPatientInjectionRequest.setInjectionWeight(defaultPatientWeight);
+        patientInjectionDto.setInjectionWeight(defaultPatientWeight);
         return defaultPatientWeight;
     }
 
-    private void getNewAcc(NewPatientInjectionRequest newPatientInjectionRequest) {
+    private void getNewAcc(PatientInjectionDto patientInjectionDto) {
         String itkACC = getNewStudyAcc("ITKHU");
-        newPatientInjectionRequest.setAcc(itkACC);
+        patientInjectionDto.setAcc(itkACC);
     }
 
     public static String giveRandomString() {

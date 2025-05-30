@@ -34,7 +34,6 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final StudyMapper studyMapper;
     private final CalculationProfileRepository calculationProfileRepository;
-    private final NewStudyMapper newStudyMapper;
     private final IsotopeRepository isotopeRepository;
     private final MachineRepository machineRepository;
     private final DailyStudyRepository dailyStudyRepository;
@@ -52,7 +51,7 @@ public class StudyService {
     }
 
     private Study createAndSaveNewStudy(NewStudy newStudy) {
-        Study study = newStudyMapper.toStudy(newStudy);
+        Study study = studyMapper.toStudy(newStudy);
         addStudyIsotope(newStudy, study);
         addStudyMachine(newStudy, study);
         study.setStatus(StudyStatus.PENDING.getCode());
@@ -251,7 +250,7 @@ public class StudyService {
     @Transactional
     public void updatePendingStudyInformation(Integer studyId, NewStudy newStudy) {
         Study study = studyRepository.getReferenceById(studyId);
-        newStudyMapper.updateStudy(study, newStudy);
+        studyMapper.updateStudy(study, newStudy);
 
         Machine machine = machineRepository.getReferenceById(newStudy.getMachineId());
         study.setMachine(machine);
