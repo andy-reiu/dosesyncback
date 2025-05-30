@@ -28,7 +28,7 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public ProfileStudyInfo getProfile(@RequestParam Integer studyId){
+    public ProfileStudyInfo getProfile(@RequestParam Integer studyId) {
         return profileService.getProfile(studyId);
     }
 
@@ -39,13 +39,6 @@ public class ProfileController {
     }
 
 }
-
-//    @GetMapping("/user")
-//    @Operation(summary = "Tagastab üksiku kasutaja infot.")
-//    public UserDto findUser(@RequestParam Integer userId) {
-//        UserDto userDto = userService.findUser(userId);
-//        return userDto;
-//    }
 
 
 
