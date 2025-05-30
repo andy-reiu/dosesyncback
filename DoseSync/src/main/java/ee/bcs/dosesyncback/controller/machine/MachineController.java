@@ -59,14 +59,14 @@ public class MachineController {
         machineService.addMachine(machineDto);
     }
 
-    @PatchMapping("/{id}/machine-status")
-    public void updateMachineStatus(@PathVariable int id, @RequestParam String status ) {
+    @PatchMapping("/{machineId}/machine-status")
+    public void updateMachineStatus(@PathVariable Integer machineId, @RequestParam String machineStatus ) {
 
-        machineService.updateMachineStatus(id, status);
+        machineService.updateMachineStatus(machineId, machineStatus);
     }
-    @PatchMapping("/machines/{id}")
-    public ResponseEntity<MachineDto> updateMachine(@PathVariable Integer id, @RequestBody MachineDto machineDto) {
-        MachineDto updatedMachineDto = machineService.updateMachine(id, machineDto);
+    @PatchMapping("/machines/{machineId}")
+    public ResponseEntity<MachineDto> updateMachine(@PathVariable Integer machineId, @RequestBody MachineDto machineDto) {
+        MachineDto updatedMachineDto = machineService.updateMachine(machineId, machineDto);
 
         return ResponseEntity.ok(updatedMachineDto);
     }

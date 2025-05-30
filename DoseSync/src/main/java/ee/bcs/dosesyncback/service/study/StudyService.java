@@ -2,6 +2,7 @@ package ee.bcs.dosesyncback.service.study;
 
 import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
+import ee.bcs.dosesyncback.controller.study.dto.StudyResult;
 import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepository;
@@ -15,6 +16,7 @@ import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFillRepository;
 import ee.bcs.dosesyncback.persistence.study.*;
+import ee.bcs.dosesyncback.service.patientinjection.PatientInjectionService;
 import ee.bcs.dosesyncback.util.SimulationResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class StudyService {
     private final MachineRepository machineRepository;
     private final DailyStudyRepository dailyStudyRepository;
     private final MachineFillRepository machineFillRepository;
+    private final PatientInjectionService patientInjectionService;
 
     public List<StudyInfo> getAllStudies() {
         List<Study> studies = studyRepository.findAll();
@@ -141,6 +144,9 @@ public class StudyService {
 
         DailyStudy previous = null;
 
+        BigDecimal vialActivityBeforeInjection;
+        BigDecimal vialActivityAfterInjection = null;
+
         for (DailyStudy current : dailyStudies) {
             Injection injection = current.getInjection();
             BigDecimal currentInjectedActivity = injection.getInjectedActivity();
@@ -148,7 +154,7 @@ public class StudyService {
             MachineFill machineFill = new MachineFill();
             machineFill.setInjection(injection);
 
-            BigDecimal vialActivityBeforeInjection;
+
             if (previous == null) {
                 BigDecimal decayFactor = calculateDecayFactorBetweenTimes(calibrationTime, injection.getInjectedTime(), halfLifeHours.doubleValue());
                 vialActivityBeforeInjection = calibratedActivity.multiply(decayFactor);
@@ -157,7 +163,8 @@ public class StudyService {
                 remainingVolume = totalVialVolume.subtract(injectedVolume);
 
                 machineFill.setVialActivityBeforeInjection(vialActivityBeforeInjection);
-                machineFill.setVialActivityAfterInjection(vialActivityBeforeInjection.subtract(currentInjectedActivity));
+                vialActivityAfterInjection = vialActivityBeforeInjection.subtract(currentInjectedActivity);
+                machineFill.setVialActivityAfterInjection(vialActivityAfterInjection);
                 // Prevent division by near-zero or negative activity
                 if (vialActivityBeforeInjection.compareTo(BigDecimal.valueOf(0.0001)) < 0) {
                     break; // or continue; or add a fallback injectedVolume
@@ -178,7 +185,8 @@ public class StudyService {
                 remainingVolume = previousFill.getRemainingVolume().subtract(injectedVolume);
 
                 machineFill.setVialActivityBeforeInjection(vialActivityBeforeInjection);
-                machineFill.setVialActivityAfterInjection(vialActivityBeforeInjection.subtract(currentInjectedActivity));
+                vialActivityAfterInjection = vialActivityBeforeInjection.subtract(currentInjectedActivity);
+                machineFill.setVialActivityAfterInjection(vialActivityAfterInjection);
                 if (vialActivityBeforeInjection.compareTo(BigDecimal.valueOf(0.0001)) < 0) {
                     break; // or continue; or add a fallback injectedVolume
                 }
@@ -189,6 +197,8 @@ public class StudyService {
             simulatedFills.add(machineFill);
             previous = current;
         }
+
+        study.setCalculationMachineRinseActivity(vialActivityAfterInjection);
 
         return new SimulationResult(
                 firstInjectedVolume.doubleValue(),
@@ -270,5 +280,13 @@ public class StudyService {
     public StudyInfo getStudy(Integer studyId) {
         Study study = studyRepository.getReferenceById(studyId);
         return studyMapper.toStudyInfo(study);
+    }
+
+    public StudyResult getStudyResult(Integer studyId) {
+        Study study = studyRepository.getReferenceById(studyId);
+        StudyResult studyResult = new StudyResult();
+        studyResult.setCalculationMachineRinseVolume(fitToPrecisionScale(study.getCalculationMachineRinseVolume()));
+        studyResult.setCalculationMachineRinseActivity(fitToPrecisionScale(study.getCalculationMachineRinseActivity()));
+        return studyResult;
     }
 }
