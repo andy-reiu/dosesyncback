@@ -6,9 +6,7 @@ import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +36,10 @@ public class ProfileController {
         return profileService.getUserProfile(userId);
     }
 
+    @PutMapping("/profile/update")
+    public void updateProfile(@RequestParam Integer userId, @RequestBody ProfileDto profileDto){
+        profileService.updateProfile(userId, profileDto);
+    }
 }
 
 

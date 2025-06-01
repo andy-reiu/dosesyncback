@@ -5,30 +5,25 @@ import ee.bcs.dosesyncback.controller.user.dto.UserDto;
 import jakarta.validation.constraints.NotNull;
 import ee.bcs.dosesyncback.controller.hospital.dto.HospitalDto;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProfileDto implements Serializable {
     Integer profileId;
-    @NotNull
+    Integer hospitalId;
+    Integer roleId;
     String hospitalName;
-    @Size(max = 255)
-    String occupation;
-    @NotNull
-    @Size(max = 11)
+    String occupationName;
     String nationalId;
-    @NotNull
-    @Size(max = 255)
     String firstName;
-    @NotNull
-    @Size(max = 255)
     String lastName;
-    @NotNull
-    @Size(max = 255)
     String email;
-    @Size(max = 255)
     String phoneNumber;
     Instant createdAt;
     Instant updatedAt;

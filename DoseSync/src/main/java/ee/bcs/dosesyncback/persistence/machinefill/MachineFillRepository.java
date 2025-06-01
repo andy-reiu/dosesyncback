@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface MachineFillRepository extends JpaRepository<MachineFill, Integer> {
 
 
@@ -17,4 +19,8 @@ public interface MachineFillRepository extends JpaRepository<MachineFill, Intege
     @Modifying
     @Query("delete from MachineFill m where m.injection.id = :injectionId")
     void deleteByInjection(Integer injectionId);
+
+
+    @Query("select m from MachineFill m where m.injection.id = :injectionId")
+    List<MachineFill> findAllByInjectionId(Integer injectionId);
 }

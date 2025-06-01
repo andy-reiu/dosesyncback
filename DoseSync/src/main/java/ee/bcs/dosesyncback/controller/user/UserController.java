@@ -1,19 +1,15 @@
 package ee.bcs.dosesyncback.controller.user;
 
 
+import ee.bcs.dosesyncback.controller.user.dto.UserAccount;
 import ee.bcs.dosesyncback.controller.user.dto.UserDto;
 import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
 import ee.bcs.dosesyncback.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,7 +29,6 @@ public class UserController {
         List<User> user = userRepository.findAll();
         List<UserDto> userDtos = userMapper.toUserDtos(user);
         return userDtos;
-
     }
 
     @GetMapping("/user")
@@ -43,14 +38,22 @@ public class UserController {
         return userDto;
     }
 
-    @PostMapping("/users")
+    @PostMapping("/user")
     @Operation(
             summary = "Lisab uue kasutja.",
             description = "Tagastab uue kasutaja userId")
-    public Integer createUser(@RequestBody UserDto userDto) {
-        return userService.createUser(new UserDto());
+    public void createUserAccount(@RequestBody UserAccount userAccount) {
+        userService.createUserAccount(userAccount);
     }
 
+    @PutMapping("/user/update")
+    @Operation(
+            summary = "Uuenda kasutaja andmeid",
+            description = "Ei tagasta midagi.")
+    public void updateUser(@RequestParam Integer selectedUserId,
+                           @RequestBody UserDto userDto) {
+        userService.updateUser(selectedUserId, userDto);
+    }
 }
 
 

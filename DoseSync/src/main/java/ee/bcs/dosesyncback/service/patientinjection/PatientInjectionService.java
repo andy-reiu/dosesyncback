@@ -149,10 +149,10 @@ public class PatientInjectionService {
         return !dailyStudyRepository.existsInDailyStudyBy(studyId);
     }
 
-    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calculationProfile, Injection injection, double halfLifeDays) {
-        long minutesBetween = ChronoUnit.MINUTES.between(calculationProfile, injection.getInjectedTime());
-        double deltaTDays = minutesBetween / 1440.0; // Convert minutes to days
-        double decayFactor = Math.pow(2, -deltaTDays / halfLifeDays);
+    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calibrationTime, Injection injection, double halfLifeHours) {
+        long minutesBetween = ChronoUnit.MINUTES.between(calibrationTime, injection.getInjectedTime());
+        double deltaTHours = minutesBetween / 60.0; // Convert minutes to hours
+        double decayFactor = Math.pow(2, -deltaTHours / halfLifeHours);
         return BigDecimal.valueOf(decayFactor);
     }
 
@@ -213,15 +213,14 @@ public class PatientInjectionService {
 
         dailyStudyRepository.deleteByInjection(patientInjectionId);
 
-        MachineFill machineFill = machineFillRepository.findMachineFillBy(patientInjectionId);
+        // Fetch all machine fills for the injection
+        List<MachineFill> machineFills = machineFillRepository.findAllByInjectionId(patientInjectionId);
 
-        //Foreign key constraint violations, check if its null or not
-        if (machineFill != null) {
-            machineFillCalculationProfileRepository.deleteByMachineFillId(machineFill.getId());
-            machineFillRepository.delete(machineFill);
+        for (MachineFill fill : machineFills) {
+            machineFillCalculationProfileRepository.deleteByMachineFillId(fill.getId());
+            machineFillRepository.delete(fill);
         }
 
-        machineFillRepository.deleteByInjection(patientInjectionId);
         injectionRepository.deleteById(patientInjectionId);
         recalculateMachineFillsForStudy(studyId);
     }
@@ -353,7 +352,7 @@ public class PatientInjectionService {
         patientInjectionDto.setAcc(itkACC);
     }
 
-    public static String giveRandomString() {
+    private static String giveRandomString() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 3;
@@ -366,7 +365,7 @@ public class PatientInjectionService {
         return buffer.toString();
     }
 
-    public static String getNewStudyAcc(String accRoot) {
+    private static String getNewStudyAcc(String accRoot) {
         String randomValueAsString = giveRandomString();
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
         String dateToday = df.format(new Date());

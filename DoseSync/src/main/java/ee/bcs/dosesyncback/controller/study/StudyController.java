@@ -86,15 +86,7 @@ public class StudyController {
     @Operation(
             summary = "Kustutab pending study",
             description = "Ei tagasta midagi.")
-    public void removePendingStudy(@RequestParam Integer studyId) {
-        studyService.removePendingStudy(studyId);
+    public void removeStudy(@RequestParam Integer studyId) {
+        studyService.removeStudy(studyId);
     }
-
-//    @DeleteMapping("/study/all")
-//    @Operation(
-//            summary = "Kustutab kõik uuringuga seonduva",
-//            description = "Ei tagasta midagi.")
-//    public void removeStudy(@RequestParam Integer studyId) {
-//        studyService.removeStudy(studyId);
-//    }
 }
