@@ -2,6 +2,9 @@ package ee.bcs.dosesyncback.service.login;
 
 import ee.bcs.dosesyncback.controller.login.dto.LoginResponse;
 import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
+import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.persistence.profile.Profile;
+import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
 import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserMapper;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
@@ -17,10 +20,16 @@ public class LoginService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
     public LoginResponse login(String username, String password) {
         User user = getValidUser(username, password);
-        return userMapper.toLoginResponse(user);
+
+        Profile profile = profileRepository.findProfileBy(user.getId())
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("profileId"), user.getId()));
+        LoginResponse loginResponse = userMapper.toLoginResponse(user); // only maps userId and roleName
+        loginResponse.setProfileId(profile.getId());
+        return loginResponse;
     }
 
     private User getValidUser(String username, String password) {

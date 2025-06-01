@@ -3,6 +3,7 @@ package ee.bcs.dosesyncback.controller.profile;
 
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,15 @@ public class ProfileController {
     @PutMapping("/profile/update")
     public void updateProfile(@RequestParam Integer userId, @RequestBody ProfileDto profileDto){
         profileService.updateProfile(userId, profileDto);
+    }
+    @GetMapping("/profile-current")
+    public ProfileUpdateInfo getCurrentUserProfile(@RequestParam Integer profileId) {
+        return profileService.getCurrentUserProfile(profileId);
+    }
+
+    @PutMapping("/profile-update")
+    public void updateProfile(@RequestBody ProfileUpdateInfo profileUpdateInfo) {
+        profileService.updateProfile(profileUpdateInfo);
     }
 }
 

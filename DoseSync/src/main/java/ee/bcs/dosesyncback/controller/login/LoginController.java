@@ -21,7 +21,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    @Operation(summary = "Sisse logimine. Tagastab userId ja roleName")
+    @Operation(summary = "Sisse logimine. Tagastab userId,roleName ja profileId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "403", description = "Vale kasutajanimi või parool", content = @Content(schema = @Schema(implementation = ApiError.class)))})

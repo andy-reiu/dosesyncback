@@ -1,12 +1,13 @@
 package ee.bcs.dosesyncback.service.profile;
 
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
+import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.hospital.Hospital;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalMapper;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
-import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
 import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
 import ee.bcs.dosesyncback.persistence.role.Role;
@@ -53,6 +54,33 @@ public class ProfileService {
         return profileMapper.toProfileDto(profile);
     }
 
+    public ProfileUpdateInfo getCurrentUserProfile(Integer profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileId));
+        return profileMapper.toProfileUpdateInfo(profile);
+    }
+
+    public void updateProfile(ProfileUpdateInfo profileUpdateInfo) {
+        Profile profile = profileRepository.findById(profileUpdateInfo.getProfileId())
+                .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileUpdateInfo.getProfileId()));
+
+        if(profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())){
+            profile.setEmail(profileUpdateInfo.getEmail());
+        }
+
+        if (profileUpdateInfo.getPhoneNumber() != null && !profileUpdateInfo.getPhoneNumber().equals(profile.getPhoneNumber())) {
+            profile.setPhoneNumber((profileUpdateInfo.getPhoneNumber()));
+        }
+
+        if (profileUpdateInfo.getOldPassword() != null && profileUpdateInfo.getNewPassword() != null) {
+            if(!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())){
+                profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
+            }
+        }
+
+       profileRepository.save(profile);
+    }
+
     @Transactional
     public void updateProfile(Integer userId, ProfileDto profileDto) {
         Profile profile = profileRepository.findProfileBy(userId)
@@ -70,3 +98,5 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 }
+}
+
