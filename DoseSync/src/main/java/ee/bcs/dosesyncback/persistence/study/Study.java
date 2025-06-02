@@ -66,5 +66,4 @@ public class Study {
 
     @Column(name = "calculation_machine_rinse_activity", precision = 8, scale = 2)
     private BigDecimal calculationMachineRinseActivity;
-
 }

@@ -18,7 +18,6 @@ public class RoleService {
 
     public List<RoleDto> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
-        List<RoleDto> roleDto = roleMapper.toRoleDto(roles);
-        return roleDto;
+        return roleMapper.toRoleDto(roles);
     }
 }

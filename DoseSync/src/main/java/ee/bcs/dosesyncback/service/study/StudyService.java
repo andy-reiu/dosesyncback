@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.service.study;
 
-import ee.bcs.dosesyncback.controller.study.dto.NewStudy;
 import ee.bcs.dosesyncback.controller.study.dto.StudyInfo;
+import ee.bcs.dosesyncback.controller.study.dto.StudyRequest;
 import ee.bcs.dosesyncback.controller.study.dto.StudyResult;
 import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
@@ -16,7 +16,10 @@ import ee.bcs.dosesyncback.persistence.machine.Machine;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFillRepository;
-import ee.bcs.dosesyncback.persistence.study.*;
+import ee.bcs.dosesyncback.persistence.study.Study;
+import ee.bcs.dosesyncback.persistence.study.StudyMapper;
+import ee.bcs.dosesyncback.persistence.study.StudyRepository;
+import ee.bcs.dosesyncback.persistence.study.StudyStatus;
 import ee.bcs.dosesyncback.service.patientinjection.PatientInjectionService;
 import ee.bcs.dosesyncback.util.SimulationResult;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +36,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StudyService {
-
     private final StudyRepository studyRepository;
     private final StudyMapper studyMapper;
     private final CalculationProfileRepository calculationProfileRepository;
@@ -45,34 +47,14 @@ public class StudyService {
     private final CalculationSettingRepository calculationSettingRepository;
 
     public List<StudyInfo> getAllStudies() {
-        List<Study> studies = studyRepository.findAll();
+        List<Study> studies = studyRepository.findStudiesByAsc();
         return studyMapper.toStudyInfos(studies);
     }
 
     @Transactional
-    public Integer addStudy(NewStudy newStudy) {
-        Study savedStudy = createAndSaveNewStudy(newStudy);
+    public Integer addStudy(StudyRequest studyRequest) {
+        Study savedStudy = createAndSaveNewStudy(studyRequest);
         return savedStudy.getId();
-    }
-
-    private Study createAndSaveNewStudy(NewStudy newStudy) {
-        Study study = studyMapper.toStudy(newStudy);
-        addStudyIsotope(newStudy, study);
-        addStudyMachine(newStudy, study);
-        study.setStatus(StudyStatus.PENDING.getCode());
-        return studyRepository.save(study);
-    }
-
-    private void addStudyMachine(NewStudy newStudy, Study study) {
-        Integer machineId = newStudy.getMachineId();
-        Machine machine = machineRepository.getReferenceById(machineId);
-        study.setMachine(machine);
-    }
-
-    private void addStudyIsotope(NewStudy newStudy, Study study) {
-        Integer isotopeId = newStudy.getIsotopeId();
-        Isotope isotope = isotopeRepository.getReferenceById(isotopeId);
-        study.setIsotope(isotope);
     }
 
     public BigDecimal calculateStudiesMachineRinseVolume(Integer studyId) {
@@ -97,6 +79,7 @@ public class StudyService {
         double minVolumeDouble = minVolume.doubleValue();
 
         // Step 2: Adjust until first injected volume >= 0.2
+        // todo: add functionality for checking/changing 2.0
         while (true) {
             assert bestResult != null;
             if (!(bestResult.getFirstInjectedVolume() < minVolumeDouble && bestRinseVolume < 2.0)) break;
@@ -110,27 +93,88 @@ public class StudyService {
         }
 
         machineFillRepository.saveAll(bestResult.getSimulatedFills());
-        Study study = studyRepository.getReferenceById(studyId);
-        BigDecimal rinseVolumeBigDecimal = BigDecimal.valueOf(bestRinseVolume);
-        BigDecimal rinseVolume = fitToPrecisionScale(rinseVolumeBigDecimal);
-        study.setCalculationMachineRinseVolume(rinseVolume);
-        studyRepository.save(study);
+        BigDecimal rinseVolume = SaveStudiesRinseVolume(studyId, bestRinseVolume);
         return rinseVolume;
     }
 
-    private BigDecimal fitToPrecisionScale(BigDecimal value) {
-        if (value == null) return null;
+    public BigDecimal getStudiesLastMachineRinseActivity(Integer studyId) {
+        List<DailyStudy> dailyStudies = dailyStudyRepository.findDailyStudiesBy(studyId);
+        DailyStudy lastDailyStudy = dailyStudies.getFirst();
+        return lastDailyStudy.getMachineFill().getVialActivityAfterInjection();
+    }
 
+    @Transactional
+    public void addStudyInformation(Integer studyId) {
+        Study study = getValidStudy(studyId);
+        findAndSetStudyInformation(studyId, study);
+        studyRepository.save(study);
+    }
+
+    @Transactional
+    public void updatePendingStudyInformation(Integer studyId, StudyRequest studyRequest) {
+        Study study = getValidStudy(studyId);
+        studyMapper.updateStudy(study, studyRequest);
+        updateStudyMachine(study, studyRequest);
+        updateStudyIsotope(study, studyRequest);
+        studyRepository.save(study);
+    }
+
+    @Transactional
+    public void removeStudy(Integer studyId) {
+        removeAllInjectionsAndMachineFills(studyId);
+        removeAllCalculationProfiles(studyId);
+        studyRepository.deleteById(studyId);
+    }
+
+    public StudyInfo getStudy(Integer studyId) {
+        Study study = getValidStudy(studyId);
+        return studyMapper.toStudyInfo(study);
+    }
+
+    public StudyResult getStudyResult(Integer studyId) {
+        Study study = getValidStudy(studyId);
+        StudyResult studyResult = new StudyResult();
+        getStudyResultFromStudy(study, studyResult);
+        return studyResult;
+    }
+
+    private Study createAndSaveNewStudy(StudyRequest studyRequest) {
+        Study study = studyMapper.toStudy(studyRequest);
+        addStudyIsotope(study, studyRequest);
+        addStudyMachine(study, studyRequest);
+        study.setStatus(StudyStatus.PENDING.getCode());
+        return studyRepository.save(study);
+    }
+
+    private void addStudyMachine(Study study, StudyRequest studyRequest) {
+        updateStudyMachine(study, studyRequest);
+    }
+
+    private void addStudyIsotope(Study study, StudyRequest studyRequest) {
+        Integer isotopeId = studyRequest.getIsotopeId();
+        Isotope isotope = getValidIsotope(isotopeId);
+        study.setIsotope(isotope);
+    }
+
+    private BigDecimal fitDoubleToBigDecimal(BigDecimal value) {
+        if (value == null) return null;
         // Round to 2 decimals
         value = value.setScale(2, RoundingMode.HALF_UP);
-
         // Clamp to max allowed value for precision 8, scale 2: 999999.99
         BigDecimal maxAllowed = new BigDecimal("999999.99");
         if (value.abs().compareTo(maxAllowed) > 0) {
             value = value.signum() < 0 ? maxAllowed.negate() : maxAllowed;
         }
-
         return value;
+    }
+
+    private BigDecimal SaveStudiesRinseVolume(Integer studyId, double bestRinseVolume) {
+        Study study = studyRepository.getReferenceById(studyId);
+        BigDecimal rinseVolumeBigDecimal = BigDecimal.valueOf(bestRinseVolume);
+        BigDecimal rinseVolume = fitDoubleToBigDecimal(rinseVolumeBigDecimal);
+        study.setCalculationMachineRinseVolume(rinseVolume);
+        studyRepository.save(study);
+        return rinseVolume;
     }
 
     private SimulationResult simulateMachineFill(Integer studyId, double candidateRinseVolume) {
@@ -221,18 +265,9 @@ public class StudyService {
         return BigDecimal.valueOf(decayFactor);
     }
 
-
-    public BigDecimal getStudiesLastMachineRinseActivity(Integer studyId) {
-        List<DailyStudy> dailyStudies = dailyStudyRepository.findDailyStudiesBy(studyId);
-        DailyStudy lastDailyStudy = dailyStudies.getFirst();
-        return lastDailyStudy.getMachineFill().getVialActivityAfterInjection();
-    }
-
-    @Transactional
-    public void addStudyInformation(Integer studyId) {
-        Study study = studyRepository.findById(studyId).orElseThrow(() -> new PrimaryKeyNotFoundException("studyId", studyId));
-        findAndSetStudyInformation(studyId, study);
-        studyRepository.save(study);
+    private Study getValidStudy(Integer studyId) {
+        return studyRepository.findStudyBy(studyId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException("studyId", studyId));
     }
 
     private void findAndSetStudyInformation(Integer studyId, Study study) {
@@ -264,44 +299,45 @@ public class StudyService {
         study.setTotalActivity(calculationProfilesFirst.getCalibratedActivity());
     }
 
-    @Transactional
-    public void updatePendingStudyInformation(Integer studyId, NewStudy newStudy) {
-        Study study = studyRepository.getReferenceById(studyId);
-        studyMapper.updateStudy(study, newStudy);
-
-        Machine machine = machineRepository.getReferenceById(newStudy.getMachineId());
+    private void updateStudyMachine(Study study, StudyRequest studyRequest) {
+        Integer machineId = studyRequest.getMachineId();
+        Machine machine = getValidMachine(machineId);
         study.setMachine(machine);
-
-        Isotope isotope = isotopeRepository.getReferenceById(newStudy.getIsotopeId());
-        study.setIsotope(isotope);
-
-        studyRepository.save(study);
     }
 
-    @Transactional
-    public void removeStudy(Integer studyId) {
+    private void updateStudyIsotope(Study study, StudyRequest studyRequest) {
+        Integer isotopeId = studyRequest.getIsotopeId();
+        Isotope isotope = getValidIsotope(isotopeId);
+        study.setIsotope(isotope);
+    }
+
+    private Isotope getValidIsotope(Integer isotopeId) {
+        return isotopeRepository.findIsotopeBy(isotopeId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException("isotopeId", isotopeId));
+    }
+
+    private Machine getValidMachine(Integer machineId) {
+        return machineRepository.findMachineBy(machineId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException("machineId", machineId));
+    }
+
+    private void removeAllCalculationProfiles(Integer studyId) {
+        List<CalculationProfile> profiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
+        calculationProfileRepository.deleteAll(profiles);
+    }
+
+    private void removeAllInjectionsAndMachineFills(Integer studyId) {
         List<DailyStudy> dailyStudies = dailyStudyRepository.getDailyStudiesBy(studyId);
         for (DailyStudy dailyStudy : dailyStudies) {
             Integer injectionId = dailyStudy.getInjection().getId();
             patientInjectionService.removePatientInjection(injectionId); // Reuse existing method
         }
-
-        List<CalculationProfile> profiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
-        calculationProfileRepository.deleteAll(profiles);
-
-        studyRepository.deleteById(studyId);
     }
 
-    public StudyInfo getStudy(Integer studyId) {
-        Study study = studyRepository.getReferenceById(studyId);
-        return studyMapper.toStudyInfo(study);
-    }
-
-    public StudyResult getStudyResult(Integer studyId) {
-        Study study = studyRepository.getReferenceById(studyId);
-        StudyResult studyResult = new StudyResult();
-        studyResult.setCalculationMachineRinseVolume(fitToPrecisionScale(study.getCalculationMachineRinseVolume()));
-        studyResult.setCalculationMachineRinseActivity(fitToPrecisionScale(study.getCalculationMachineRinseActivity()));
-        return studyResult;
+    private void getStudyResultFromStudy(Study study, StudyResult studyResult) {
+        BigDecimal calculationMachineRinseVolume = study.getCalculationMachineRinseVolume();
+        studyResult.setCalculationMachineRinseVolume(fitDoubleToBigDecimal(calculationMachineRinseVolume));
+        BigDecimal calculationMachineRinseActivity = study.getCalculationMachineRinseActivity();
+        studyResult.setCalculationMachineRinseActivity(fitDoubleToBigDecimal(calculationMachineRinseActivity));
     }
 }

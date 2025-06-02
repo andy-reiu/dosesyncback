@@ -1,12 +1,12 @@
 package ee.bcs.dosesyncback.controller.hospital.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class HospitalDto {
     private Integer hospitalId;
     private String hospitalName;

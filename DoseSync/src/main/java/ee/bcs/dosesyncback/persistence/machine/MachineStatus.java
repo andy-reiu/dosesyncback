@@ -8,5 +8,6 @@ import lombok.RequiredArgsConstructor;
 public enum MachineStatus {
     ACTIVE("A"),
     DISABLED("D");
+
     private final String code;
 }

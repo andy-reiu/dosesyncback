@@ -31,7 +31,7 @@ public interface IsotopeMapper {
     @Mapping(source = "isotopeName", target = "name")
     @Mapping(source = "halfLifeHr", target = "halfLifeHr")
     @Mapping(source = "unit", target = "unit")
-    void updateFromIsotopeDto(IsotopeDto isotopeDto,@MappingTarget Isotope isotope);
+    void updateFromIsotopeDto(@MappingTarget Isotope isotope, IsotopeDto isotopeDto);
 
     @Mapping(source = "id", target = "isotopeId")
     @Mapping(source = "name", target = "isotopeName")

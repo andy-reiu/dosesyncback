@@ -4,19 +4,24 @@ import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.persistence.hospital.Hospital;
+import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
 import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
+import ee.bcs.dosesyncback.persistence.role.Role;
+import ee.bcs.dosesyncback.persistence.role.RoleRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
+import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
 import ee.bcs.dosesyncback.persistence.userimage.UserImage;
 import ee.bcs.dosesyncback.persistence.userimage.UserImageMapper;
 import ee.bcs.dosesyncback.persistence.userimage.UserImageRepository;
 import ee.bcs.dosesyncback.util.ImageConverter;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,26 +34,25 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
+    private final HospitalRepository hospitalRepository;
+    private final RoleRepository roleRepository;
     private final UserImageRepository userImageRepository;
     private final UserImageMapper userImageMapper;
 
     public ProfileStudyInfo getProfile(Integer studyId) {
         Study study = studyRepository.getReferenceById(studyId);
         Integer userId = study.getUser().getId();
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+        Profile profile = getValidProfile(userId);
         return profileMapper.toProfileStudyInfo(profile);
     }
 
     public List<ProfileDto> getAllProfiles() {
         List<Profile> profiles = profileRepository.findAll();
-        List<ProfileDto> profileDtos = profileMapper.toProfileDtos(profiles);
-        return profileDtos;
+        return profileMapper.toProfileDtos(profiles);
     }
 
     public ProfileDto getUserProfile(Integer userId) {
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+        Profile profile = getValidProfile(userId);
         return profileMapper.toProfileDto(profile);
     }
 
@@ -121,5 +125,33 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
+    @Transactional
+    public void updateAccountProfile(Integer userId, ProfileDto profileDto) {
+        Profile profile = getValidProfile(userId);
+        profileMapper.toUpdateProfile(profile, profileDto);
+        updateProfileHospital(profile, profileDto);
+        profileRepository.save(profile);
+        User user = updateUserRole(userId, profileDto);
+        userRepository.save(user);
+    }
+
+    private User updateUserRole(Integer userId, ProfileDto profileDto) {
+        Integer roleId = profileDto.getRoleId();
+        Role role = roleRepository.getReferenceById(roleId);
+        User user = userRepository.getReferenceById(userId);
+        user.setRole(role);
+        return user;
+    }
+
+    private void updateProfileHospital(Profile profile, ProfileDto profileDto) {
+        Hospital hospital = hospitalRepository.getReferenceById(profileDto.getHospitalId());
+        profile.setHospital(hospital);
+    }
+
+    private Profile getValidProfile(Integer userId) {
+        return profileRepository.findProfileBy(userId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+    }
 }
+
 

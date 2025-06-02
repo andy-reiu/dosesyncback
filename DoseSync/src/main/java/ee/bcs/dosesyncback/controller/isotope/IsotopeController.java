@@ -23,26 +23,21 @@ public class IsotopeController {
 
     private final IsotopeService isotopeService;
 
-    //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
+    //todo: DLC: Lisada juurde haigla järgi leidmine, vaatab kus haiglast pärit ning otsib vastavad väljad.
     @GetMapping("/active-isotopes")
     @Operation(
             summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik isotoobid.",
             description = "Tagastab info koos isotopeId ja isotopeName'ga")
     public List<IsotopeInfo> getAllActiveIsotopes() {
-
         return isotopeService.getAllActiveIsotopes();
     }
-
-    //todo: Admini menüüsse isotoobi lisamine ja väljade muutmine (kõik väljad: name, half_life_hr, unit)
 
     @GetMapping("/isotopes")
     @Operation(
             summary = "Leiab süsteeemist (admebaasist isotoopide tabelist) kõik isotoobid.",
             description = "Tagastab info koos isotopeId, isotopeName, halfLifeHr, unit ja statusega.")
     public List<IsotopeDto> getAllIsotopes() {
-        List<IsotopeDto> isotopeDtos = isotopeService.getAllIsotopes();
-
-        return isotopeDtos;
+        return isotopeService.getAllIsotopes();
     }
 
     @PostMapping("/isotopes")
@@ -51,28 +46,33 @@ public class IsotopeController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "403", description = "Sellise nimega isotoop on juba süsteemis olemas", content = @Content(schema = @Schema(implementation = ApiError.class)))})
     public Isotope addIsotope(@RequestBody IsotopeDto isotopeDto) {
-
         return isotopeService.addIsotope(isotopeDto);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Kustutab isotoobi info")
-    public ResponseEntity<Object> removeIsotope(@PathVariable("id") Integer isotopeId) {
-        isotopeService.removeIsotope(isotopeId);
-
-        return ResponseEntity.noContent().build();
+    @PatchMapping("/{isotopeId}/isotope-status")
+    @Operation(
+            summary = "Uuendab isotoobi staatust.",
+            description = "Võtab isotoobi ID ja uue staatuse stringina, uuendab isotoobi staatuse andmebaasis ning tagastab uuendatud isotoobi info.")
+    public IsotopeDto updateIsotopeStatus(@PathVariable Integer isotopeId, @RequestParam String status) {
+        return isotopeService.updateIsotopeStatus(isotopeId, status);
     }
 
-    @PatchMapping("/{id}/isotope-status")
-    public IsotopeDto updateIsotopeStatus(@PathVariable Integer id, @RequestParam String status) {
-        return isotopeService.updateIsotopeStatus(id, status);
-    }
-
-    @PatchMapping("/isotopes/{id}")
-    public ResponseEntity<IsotopeDto> updateIsotope(@PathVariable Integer id, @RequestBody IsotopeDto isotopeDto) {
-        IsotopeDto updatedIsotopeDto = isotopeService.updateIsotope(id, isotopeDto);
-
+    @PatchMapping("/isotopes/{isotopeId}")
+    @Operation(
+            summary = "Uuendab olemasoleva isotoobi andmeid.",
+            description = "Võtab isotoobi ID ja IsotopeDto objekti, uuendab andmebaasis vastava isotoobi ning tagastab uuendatud isotoobi andmed.")
+    public ResponseEntity<IsotopeDto> updateIsotope(@PathVariable Integer isotopeId, @RequestBody IsotopeDto isotopeDto) {
+        IsotopeDto updatedIsotopeDto = isotopeService.updateIsotope(isotopeId, isotopeDto);
         return ResponseEntity.ok(updatedIsotopeDto);
+    }
+
+    @DeleteMapping("/{isotopeId}")
+    @Operation(
+            summary = "Kustutab isotoobi info (deaktiveerib isotoobi).",
+            description = "Muutab isotoobi staatuseks 'DISABLED', ei eemalda kirjet andmebaasist. Tagastab HTTP 204 ilma sisuta.")
+    public ResponseEntity<Object> removeIsotope(@PathVariable Integer isotopeId) {
+        isotopeService.removeIsotope(isotopeId);
+        return ResponseEntity.noContent().build();
     }
 }
 

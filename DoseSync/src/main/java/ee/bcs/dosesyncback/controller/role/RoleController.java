@@ -22,5 +22,4 @@ public class RoleController {
     public List<RoleDto> getAllRoles() {
         return roleService.getAllRoles();
     }
-
 }

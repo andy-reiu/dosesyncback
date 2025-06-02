@@ -11,11 +11,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@RequestMapping("/calculation-setting")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/calculation-setting")
 public class CalculationSettingController {
     private final CalculationSettingService calculationSettingService;
 
@@ -25,8 +26,7 @@ public class CalculationSettingController {
             description = "Tagastab info koos settingsId, settingMinActiviy, settingMaxActivity, " +
                     "settingMinVol, settingMachineVolMax, settingMachineVolMin")
     public List<CalculationSettingDto> getAllCalculationSettings() {
-        List<CalculationSettingDto> calculationSettingDtos = calculationSettingService.getAllCalculationSettings();
-        return calculationSettingDtos;
+        return calculationSettingService.getAllCalculationSettings();
     }
 
     @PostMapping("/calculation-settings")
@@ -40,10 +40,13 @@ public class CalculationSettingController {
     }
 
     @PatchMapping("/calculation-settings/{id}")
+    @Operation(
+            summary = "Uuendab olemasolevat Calculation Settingut",
+            description = "Võtab Calculation Setting ID ja osalised uuendatavad väljad, " +
+                    "uuendab vastava kirje andmebaasis ning tagastab uuendatud andmed.")
     public ResponseEntity<CalculationSettingDto> updateCalculationSetting(@PathVariable Integer id,
                                                                           @RequestBody CalculationSettingDto calculationSettingDto) {
         CalculationSettingDto updatedCalculationSetting = calculationSettingService.updateCalculationSetting(id, calculationSettingDto);
         return ResponseEntity.ok(updatedCalculationSetting);
-
     }
 }

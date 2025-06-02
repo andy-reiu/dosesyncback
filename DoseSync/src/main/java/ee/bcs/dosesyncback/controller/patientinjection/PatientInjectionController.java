@@ -17,16 +17,24 @@ public class PatientInjectionController {
 
     @GetMapping("/patient-injections")
     @Operation(
-            summary = "Leiab patsiendi süsimised.",
-            description = "Tagastab listi patsiendi süsimistest.")
+            summary = "Leiab kõik patsiendi süstid antud uuringus.",
+            description = "Tagastab nimekirja antud uuringuga seotud patsiendi süstimistest, sh patsiendi isikukood.")
     public List<PatientInjectionInfo> getAllStudiesPatientInjections(@RequestParam Integer studyId) {
         return patientInjectionService.getAllStudiesPatientInjections(studyId);
     }
 
+    @GetMapping("/patient-injection/template")
+    @Operation(
+            summary = "Kasutab kalkulatsiooni sätteid, mille põhjal koostab patsiendi süstimise algandmed.",
+            description = "Tagastab põhja patsiendi süstimisest vajalike väljadega.")
+    public PatientInjectionDto getStudyPatientInjectionTemplate(@RequestParam Integer studyId) {
+        return patientInjectionService.getStudyPatientInjectionTemplate(studyId);
+    }
+
     @PostMapping("/patient-injection")
     @Operation(
-            summary = "Lisab patsiendi süstimist.",
-            description = "Ei tagasta midagi.")
+            summary = "Lisab patsiendi süstimise.",
+            description = "Salvestab süsti, patsiendi ja arvutab vastava masina täite.")
     public void addPatientInjection(@RequestParam Integer isotopeId, @RequestBody PatientInjectionDto patientInjectionDto) {
         patientInjectionService.addPatientInjection(isotopeId, patientInjectionDto);
     }
@@ -46,13 +54,5 @@ public class PatientInjectionController {
             description = "Ei tagasta midagi.")
     public void removePatientInjection(@RequestParam Integer patientInjectionId) {
         patientInjectionService.removePatientInjection(patientInjectionId);
-    }
-
-    @GetMapping("/patient-injection/template")
-    @Operation(
-            summary = "Kasutab kalkulatsiooni sätteid nii koostab patsiendi süstimise template.",
-            description = "Tagastab template patsiendi süstimisest vajalike väljadega.")
-    public PatientInjectionDto getStudyPatientInjectionTemplate(@RequestParam Integer studyId) {
-        return patientInjectionService.getStudyPatientInjectionTemplate(studyId);
     }
 }

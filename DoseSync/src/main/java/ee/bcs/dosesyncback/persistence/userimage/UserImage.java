@@ -25,5 +25,4 @@ public class UserImage {
     @NotNull
     @Column(name = "data", nullable = false)
     private byte[] data;
-
 }
