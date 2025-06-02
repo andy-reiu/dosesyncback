@@ -11,8 +11,8 @@ import ee.bcs.dosesyncback.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static ee.bcs.dosesyncback.persistence.user.UserStatus.ACTIVE;
 import static ee.bcs.dosesyncback.infrastructure.Error.INCORRECT_CREDENTIALS;
+import static ee.bcs.dosesyncback.persistence.user.UserStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +24,16 @@ public class LoginService {
 
     public LoginResponse login(String username, String password) {
         User user = getValidUser(username, password);
-
-        Profile profile = profileRepository.findProfileBy(user.getId())
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("profileId"), user.getId()));
+        Integer userId = user.getId();
+        Profile profile = getValidProfile(userId);
         LoginResponse loginResponse = userMapper.toLoginResponse(user); // only maps userId and roleName
         loginResponse.setProfileId(profile.getId());
         return loginResponse;
+    }
+
+    private Profile getValidProfile(Integer userId) {
+        return profileRepository.findProfileBy(userId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("profileId"), userId));
     }
 
     private User getValidUser(String username, String password) {

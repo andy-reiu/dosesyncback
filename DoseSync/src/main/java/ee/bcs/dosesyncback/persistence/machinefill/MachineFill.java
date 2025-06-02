@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 
@@ -35,5 +34,4 @@ public class MachineFill {
 
     @Column(name = "remaining_volume", precision = 8, scale = 2)
     private BigDecimal remainingVolume;
-
 }

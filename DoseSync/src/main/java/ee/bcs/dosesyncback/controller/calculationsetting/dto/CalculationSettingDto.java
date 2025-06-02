@@ -6,12 +6,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalTime;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class CalculationSettingDto {
     private Integer settingId;
     private BigDecimal settingMinActivity;

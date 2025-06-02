@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserAccount {
     private Integer roleId;
-    //private String roleName;
     private String username;
     private String password;
     private String userStatus;
     private Integer hospitalId;
-    //private String hospitalName;
     private String occupationName;
     private String nationalId;
     private String firstName;

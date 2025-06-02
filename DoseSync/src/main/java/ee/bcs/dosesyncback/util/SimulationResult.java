@@ -16,5 +16,4 @@ public class SimulationResult {
         this.lastRemainingVolume = lastRemainingVolume;
         this.simulatedFills = simulatedFills;
     }
-
 }

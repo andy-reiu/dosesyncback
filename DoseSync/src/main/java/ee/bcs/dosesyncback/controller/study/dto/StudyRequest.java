@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewStudy implements Serializable {
+public class StudyRequest implements Serializable {
     private Integer userId;
     private Integer machineId;
     private Integer isotopeId;

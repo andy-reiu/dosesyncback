@@ -1,20 +1,18 @@
 package ee.bcs.dosesyncback.controller.isotope.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class IsotopeDto {
     private Integer isotopeId;
     private String isotopeName;
     private BigDecimal halfLifeHr;
     private String unit;
     private String isotopeStatus;
-
-
 }

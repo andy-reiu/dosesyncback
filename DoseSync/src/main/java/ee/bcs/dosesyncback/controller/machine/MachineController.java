@@ -1,7 +1,7 @@
 package ee.bcs.dosesyncback.controller.machine;
 
-import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import ee.bcs.dosesyncback.controller.machine.dto.MachineDto;
+import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import ee.bcs.dosesyncback.service.machine.MachineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,61 +13,52 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(("/machine"))
-@CrossOrigin(origins = "http://localhost:8081",
-        allowedHeaders = "*",
-        methods = {
-                RequestMethod.GET,
-                RequestMethod.POST,
-                RequestMethod.PATCH,
-                RequestMethod.DELETE,
-                RequestMethod.PUT,
-                RequestMethod.OPTIONS
-        })
 @RequiredArgsConstructor
+@RequestMapping(("/machine"))
 public class MachineController {
 
     private final MachineService machineService;
 
-    //todo: lisada juurde, et kontrollib getAll'ga millises haiglast töötaja küsib.
     @GetMapping("/active-machines")
     @Operation(
-            summary = "Leiab süsteemist (andmebaasist seadmete tabelist) kõik linnad.",
-            description = "Tagastab info koos machineId ja machineName'ga")
-    public List<MachineInfo> getAllActiveMachines(){
+            summary = "Leiab süsteemist (andmebaasist masinate tabelist) kõik aktiivsed masinad.",
+            description = "Tagastab info koos machineId ja machineName'ga.")
+    public List<MachineInfo> getAllActiveMachines() {
         return machineService.getAllActiveMachines();
     }
-    //todo: Admini menüüsse masinate lisamine ja väljade 0muutmine (kõik väljad: hospital_id (FK), name, serial_number, description, status)
+
     @GetMapping("/machines")
     @Operation(
             summary = "Leiab süsteemist (andmebaasist machine tabelist) kõik masinad.",
             description = "Tagastab info koos machineId, machineName, hospitalId," +
-                    " machineSeriali, descriptioni ja statusega "
-    )
+                    " machineSeriali, descriptioni ja statusega ")
     public List<MachineDto> getAllMachines() {
-        List<MachineDto> machineDtos = machineService.getAllMachines();
-        return machineDtos;
+        return machineService.getAllMachines();
     }
+
     @PostMapping("/machines")
     @Operation(summary = "Uue masina lisamine.", description = "Kõik väljad on kohustuslikud.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "403", description = "Sellise nimega masin on juba süsteemis olemas!")
-    })
+            @ApiResponse(responseCode = "403", description = "Sellise nimega masin on juba süsteemis olemas!")})
     public void addMachine(@RequestBody MachineDto machineDto) {
-
         machineService.addMachine(machineDto);
     }
 
     @PatchMapping("/{machineId}/machine-status")
-    public void updateMachineStatus(@PathVariable Integer machineId, @RequestParam String machineStatus ) {
-
+    @Operation(
+            summary = "Leiab süsteemist (andmebaasist machine tabelist) kõik masinad.",
+            description = "Tagastab info koos machineId, machineName, hospitalId, machineSeriali, descriptioni ja statusega.")
+    public void updateMachineStatus(@PathVariable Integer machineId, @RequestParam String machineStatus) {
         machineService.updateMachineStatus(machineId, machineStatus);
     }
+
     @PatchMapping("/machines/{machineId}")
+    @Operation(
+            summary = "Uuendab masina infot andmebaasis",
+            description = "Võtab masin ID ja MachineDto objekti, uuendab masina andmed ja tagastab uuendatud masina info.")
     public ResponseEntity<MachineDto> updateMachine(@PathVariable Integer machineId, @RequestBody MachineDto machineDto) {
         MachineDto updatedMachineDto = machineService.updateMachine(machineId, machineDto);
-
         return ResponseEntity.ok(updatedMachineDto);
     }
 }
