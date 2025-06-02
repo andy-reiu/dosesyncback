@@ -9,8 +9,6 @@ CREATE TABLE calculation_profile (
                                      isotope_id int  NOT NULL,
                                      calibrated_activity decimal(8,2)  NOT NULL,
                                      calibration_time time  NOT NULL,
-                                     --administration_time time  NOT NULL, -- kas seda on ikkagi vaja?
-                                     --activity_before_first int  NOT NULL, -- kas seda on ikkagi vaja?
                                      fill_volume int  NOT NULL,
                                      CONSTRAINT calculation_profile_pk PRIMARY KEY (id)
 );
@@ -93,14 +91,6 @@ CREATE TABLE machine_fill (
                               injected_volume decimal(8,2)  NULL,
                               remaining_volume decimal(8,2)  NULL,
                               CONSTRAINT machine_fill_pk PRIMARY KEY (id)
-);
-
--- Table: machine_fill_caculation_profile
-CREATE TABLE machine_fill_calculation_profile (
-                                                 id serial  NOT NULL,
-                                                 machine_fill_id int  NOT NULL,
-                                                 calculation_profile_id int  NOT NULL,
-                                                 CONSTRAINT machine_fill_caculation_profile_pk PRIMARY KEY (id)
 );
 
 -- Table: patient
@@ -218,22 +208,6 @@ ALTER TABLE daily_study ADD CONSTRAINT daily_study_study
 ALTER TABLE daily_study ADD CONSTRAINT daily_studyies_patient
     FOREIGN KEY (patient_id)
         REFERENCES patient (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
-
--- Reference: machine_fill_calculation_profile_calculation_profile (table: machine_fill_calculation_profile)
-ALTER TABLE machine_fill_calculation_profile ADD CONSTRAINT machine_fill_calculation_profile_calculation_profile
-    FOREIGN KEY (calculation_profile_id)
-        REFERENCES calculation_profile (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
-
--- Reference: machine_fill_calculation_profile_machine_fill (table: machine_fill_calculation_profile)
-ALTER TABLE machine_fill_calculation_profile ADD CONSTRAINT machine_fill_calculation_profile_machine_fill
-    FOREIGN KEY (machine_fill_id)
-        REFERENCES machine_fill (id)
         NOT DEFERRABLE
             INITIALLY IMMEDIATE
 ;

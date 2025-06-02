@@ -6,6 +6,7 @@ import ee.bcs.dosesyncback.controller.study.dto.StudyResult;
 import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepository;
+import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingRepository;
 import ee.bcs.dosesyncback.persistence.dailystudy.DailyStudy;
 import ee.bcs.dosesyncback.persistence.dailystudy.DailyStudyRepository;
 import ee.bcs.dosesyncback.persistence.injection.Injection;
@@ -41,6 +42,7 @@ public class StudyService {
     private final DailyStudyRepository dailyStudyRepository;
     private final MachineFillRepository machineFillRepository;
     private final PatientInjectionService patientInjectionService;
+    private final CalculationSettingRepository calculationSettingRepository;
 
     public List<StudyInfo> getAllStudies() {
         List<Study> studies = studyRepository.findAll();
@@ -78,6 +80,7 @@ public class StudyService {
         double smallestDiff = Double.MAX_VALUE;
         SimulationResult bestResult = null;
 
+        //todo: min ja max võtta andmebaasist.
         for (int i = 100; i <= 400; i++) {
             double candidate = i / 100.0;
             SimulationResult result = simulateMachineFill(studyId, candidate);
@@ -90,10 +93,13 @@ public class StudyService {
             }
         }
 
+        BigDecimal minVolume = calculationSettingRepository.findById(1).get().getMinVolume();
+        double minVolumeDouble = minVolume.doubleValue();
+
         // Step 2: Adjust until first injected volume >= 0.2
         while (true) {
             assert bestResult != null;
-            if (!(bestResult.getFirstInjectedVolume() < 0.2 && bestRinseVolume < 2.0)) break;
+            if (!(bestResult.getFirstInjectedVolume() < minVolumeDouble && bestRinseVolume < 2.0)) break;
             bestRinseVolume += 0.01;
             bestResult = simulateMachineFill(studyId, bestRinseVolume);
         }
@@ -126,6 +132,7 @@ public class StudyService {
 
         return value;
     }
+
     private SimulationResult simulateMachineFill(Integer studyId, double candidateRinseVolume) {
         Study study = studyRepository.getReferenceById(studyId);
         BigDecimal halfLifeHours = study.getIsotope().getHalfLifeHr();
@@ -209,8 +216,8 @@ public class StudyService {
 
     private BigDecimal calculateDecayFactorBetweenTimes(LocalTime from, LocalTime to, double halfLifeHours) {
         long minutesBetween = ChronoUnit.MINUTES.between(from, to);
-        double deltaTInDays = minutesBetween / 1440.0;
-        double decayFactor = Math.pow(2, -deltaTInDays / (halfLifeHours / 24.0));
+        double deltaTInHours = minutesBetween / 60.0; // Use hours directly
+        double decayFactor = Math.pow(2, -deltaTInHours / halfLifeHours);
         return BigDecimal.valueOf(decayFactor);
     }
 
@@ -272,9 +279,17 @@ public class StudyService {
     }
 
     @Transactional
-    public void removePendingStudy(Integer studyId) {
-        Study study = studyRepository.getReferenceById(studyId);
-        studyRepository.delete(study);
+    public void removeStudy(Integer studyId) {
+        List<DailyStudy> dailyStudies = dailyStudyRepository.getDailyStudiesBy(studyId);
+        for (DailyStudy dailyStudy : dailyStudies) {
+            Integer injectionId = dailyStudy.getInjection().getId();
+            patientInjectionService.removePatientInjection(injectionId); // Reuse existing method
+        }
+
+        List<CalculationProfile> profiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
+        calculationProfileRepository.deleteAll(profiles);
+
+        studyRepository.deleteById(studyId);
     }
 
     public StudyInfo getStudy(Integer studyId) {
