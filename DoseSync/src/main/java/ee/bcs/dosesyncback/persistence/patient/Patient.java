@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "patient", schema = "dosesync", uniqueConstraints = {
-        @UniqueConstraint(name = "patient_ak_1", columnNames = {"patient_national_id"})
-})
+        @UniqueConstraint(name = "patient_ak_1", columnNames = {"patient_national_id"})})
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +19,4 @@ public class Patient {
     @Size(max = 11)
     @Column(name = "patient_national_id", length = 11)
     private String patientNationalId;
-
 }

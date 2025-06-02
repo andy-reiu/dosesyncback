@@ -1,11 +1,7 @@
 package ee.bcs.dosesyncback.controller.user;
 
-
 import ee.bcs.dosesyncback.controller.user.dto.UserAccount;
 import ee.bcs.dosesyncback.controller.user.dto.UserDto;
-import ee.bcs.dosesyncback.persistence.user.User;
-import ee.bcs.dosesyncback.persistence.user.UserMapper;
-import ee.bcs.dosesyncback.persistence.user.UserRepository;
 import ee.bcs.dosesyncback.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,38 +14,36 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @GetMapping("/users")
     @Operation(
-            summary = "Leiab süsteemist (andmebaasist users tabelist) kõik kasutajad.",
-            description = "Tagastab info koos userID ja userite andmetega'ga")
+            summary = "Tagastab kõik kasutajad.",
+            description = "Pärib andmebaasist kõik kasutajad ning tagastab nende andmed DTO kujul, " +
+                    "sisaldades näiteks kasutaja ID ja muid seotud andmeid.")
     public List<UserDto> getAllUsers() {
-        List<User> user = userRepository.findAll();
-        List<UserDto> userDtos = userMapper.toUserDtos(user);
-        return userDtos;
+        return userService.getAllUsers();
     }
 
     @GetMapping("/user")
-    @Operation(summary = "Tagastab üksiku kasutaja infot.")
+    @Operation(
+            summary = "Leiab kasutaja ID põhjal.",
+            description = "Tagastab konkreetse kasutaja andmed, jättes parooli välja.")
     public UserDto findUser(@RequestParam Integer userId) {
-        UserDto userDto = userService.findUser(userId);
-        return userDto;
+        return userService.findUser(userId);
     }
 
     @PostMapping("/user")
     @Operation(
-            summary = "Lisab uue kasutaja.",
-            description = "Tagastab uue kasutaja userId")
+            summary = "Loob uue kasutaja.",
+            description = "Salvestab uue kasutaja ja profiili koos rolli ja haiglaga.")
     public void createUserAccount(@RequestBody UserAccount userAccount) {
         userService.createUserAccount(userAccount);
     }
 
     @PutMapping("/user/update")
     @Operation(
-            summary = "Uuenda kasutaja andmeid",
-            description = "Ei tagasta midagi.")
+            summary = "Uuendab kasutaja andmeid.",
+            description = "Uuendab kasutaja rolli ja muid andmeid, vastust ei tagasta.")
     public void updateUser(@RequestParam Integer selectedUserId,
                            @RequestBody UserDto userDto) {
         userService.updateUser(selectedUserId, userDto);

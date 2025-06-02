@@ -18,30 +18,28 @@ public class HospitalService {
     private final HospitalRepository hospitalRepository;
     private final HospitalMapper hospitalMapper;
 
-
     public List<HospitalDto> getAllHospitals() {
         List<Hospital> hospitals = hospitalRepository.findAll();
-        List<HospitalDto> hospitalDtos = hospitalMapper.toHospitalDtos(hospitals);
-
-        return hospitalDtos;
+        return hospitalMapper.toHospitalDtos(hospitals);
     }
 
     @Transactional
     public Hospital addHospital(HospitalDto hospitalDto) {
         Hospital hospital = hospitalMapper.toHospital(hospitalDto);
-        Hospital saved = hospitalRepository.save(hospital);
-
-        return saved;
+        return hospitalRepository.save(hospital);
     }
+
     @Transactional
     public HospitalDto updateHospital(Integer hospitalId, HospitalDto hospitalDto) {
-        Hospital hospital = hospitalRepository.findById(hospitalId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("hospitalId"), hospitalId));
-
+        Hospital hospital = getValidHospital(hospitalId);
         hospitalMapper.updateFromHospitalDto(hospitalDto, hospital);
         hospitalRepository.save(hospital);
-
         return hospitalMapper.toHospitalDto(hospital);
+    }
+
+    private Hospital getValidHospital(Integer hospitalId) {
+        return hospitalRepository.findHospitalBy(hospitalId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("hospitalId"), hospitalId));
     }
 }
 

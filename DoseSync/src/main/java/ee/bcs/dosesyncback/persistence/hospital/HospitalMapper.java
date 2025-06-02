@@ -25,5 +25,5 @@ public interface HospitalMapper {
 
     @Mapping(source = "hospitalName", target = "name")
     @Mapping(source = "hospitalAddress", target = "address")
-    void updateFromHospitalDto(HospitalDto hospitalDto,@MappingTarget Hospital hospital);
+    void updateFromHospitalDto(HospitalDto hospitalDto, @MappingTarget Hospital hospital);
 }

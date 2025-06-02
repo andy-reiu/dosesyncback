@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineFillInfo implements Serializable {
+public class MachineFillInfo {
     private Integer machineFillId;
     private BigDecimal vialActivityBeforeInjection;
     private BigDecimal vialActivityAfterInjection;

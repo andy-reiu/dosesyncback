@@ -17,7 +17,6 @@ public interface UserMapper {
 
     @Mapping(source = "role.name", target = "roleName")
     @Mapping(source = "username", target = "username")
-    @Mapping(source = "password", target = "password")
     @Mapping(source = "status", target = "status")
     UserDto toUserDto(User user);
 

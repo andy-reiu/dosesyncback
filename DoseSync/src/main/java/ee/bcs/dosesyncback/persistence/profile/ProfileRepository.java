@@ -13,7 +13,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Integer> {
     @Query("select p from Profile p where p.user.id = :userId")
     Optional<Profile> findProfileBy(Integer userId);
 
-
     Optional<Profile> findByUserId(Integer userId);
-
 }

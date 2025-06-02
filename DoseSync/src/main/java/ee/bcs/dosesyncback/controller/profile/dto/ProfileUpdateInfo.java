@@ -1,8 +1,12 @@
 package ee.bcs.dosesyncback.controller.profile.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProfileUpdateInfo {
     private Integer profileId;
     private String firstName;
@@ -12,10 +16,8 @@ public class ProfileUpdateInfo {
     private String email;
     private String phoneNumber;
     private String hospitalName;
-
     private String oldPassword;
     private String newPassword;
-
     private String imageData;
 
 }

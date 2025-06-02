@@ -7,7 +7,7 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel       = MappingConstants.ComponentModel.SPRING,
+        componentModel = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface MachineMapper {
     @Mapping(source = "machineId", target = "id")
@@ -30,12 +30,11 @@ public interface MachineMapper {
 
     List<MachineDto> toMachineDtos(List<Machine> machines);
 
-    @Mapping(source = "machineName",        target = "name")
-    @Mapping(source = "machineSerial",      target = "serialNumber")
+    @Mapping(source = "machineName", target = "name")
+    @Mapping(source = "machineSerial", target = "serialNumber")
     @Mapping(source = "machineDescription", target = "description")
     @Mapping(ignore = true, target = "hospital.id")
-
-    void updateFromMachineDto(MachineDto machineDto, @MappingTarget Machine machine);
+    void updateFromMachineDto(@MappingTarget Machine machine, MachineDto machineDto);
 
     @Mapping(source = "id", target = "machineId")
     @Mapping(source = "name", target = "machineName")

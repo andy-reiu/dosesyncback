@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse implements Serializable {
+public class LoginResponse {
     private Integer userId;
     private String roleName;
     private Integer profileId;

@@ -8,5 +8,6 @@ import lombok.RequiredArgsConstructor;
 public enum IsotopeStatus {
     ACTIVE("A"),
     DISABLED("D");
+
     private final String code;
 }

@@ -3,6 +3,7 @@ package ee.bcs.dosesyncback.service.patientinjection;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionDto;
 import ee.bcs.dosesyncback.controller.patientinjection.dto.PatientInjectionInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfile;
 import ee.bcs.dosesyncback.persistence.calculationprofile.CalculationProfileRepository;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSetting;
@@ -66,23 +67,22 @@ public class PatientInjectionService {
     public void addPatientInjection(Integer isotopeId, PatientInjectionDto patientInjectionDto) {
 
         Integer studyId = patientInjectionDto.getStudyId();
-        Study study = studyRepository.getReferenceById(studyId);
-        Injection injection = createAndSaveInjection(patientInjectionDto);
-        Patient patient = createAndSavePatient(patientInjectionDto);
+        Study study = getValidStudy(studyId);
+        BigDecimal calculationMachineRinseVolume = study.getCalculationMachineRinseVolume();
+        BigDecimal vialVolume = Optional.ofNullable(calculationMachineRinseVolume).orElse(BigDecimal.ZERO);
 
         double halfLifeDays = getStudiesIsotopeHalfLifeDays(isotopeId);
-        BigDecimal vialVolume = Optional.ofNullable(study.getCalculationMachineRinseVolume())
-                .orElse(BigDecimal.ZERO);
-
-        BigDecimal currentInjectedActivity = injection.getInjectedActivity();
 
         // Calculate the machine fills for the syringe
         MachineFill machineFill = new MachineFill();
+        Injection injection = createAndSaveInjection(patientInjectionDto);
+        BigDecimal currentInjectedActivity = injection.getInjectedActivity();
 
         if (isFirstDailyStudy(studyId)) {
 
             CalculationProfile calculationProfile = getLastCalculationProfile(studyId);
-            BigDecimal decayFactorBigDecimal = calculateDecayFactorBetweenTimes(calculationProfile.getCalibrationTime(),
+            LocalTime calibrationTime = calculationProfile.getCalibrationTime();
+            BigDecimal decayFactorBigDecimal = calculateDecayFactorBetweenTimes(calibrationTime,
                     injection, halfLifeDays);
 
             //    private BigDecimal vialActivityBeforeInjection;
@@ -129,6 +129,8 @@ public class PatientInjectionService {
             machineFill.setRemainingVolume(remainingVolume);
         }
 
+        Patient patient = createAndSavePatient(patientInjectionDto);
+
         machineFill.setInjection(injection);
         machineFillRepository.save(machineFill);
 
@@ -141,46 +143,6 @@ public class PatientInjectionService {
         dailyStudy.setCreatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         dailyStudy.setUpdatedAt(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         dailyStudyRepository.save(dailyStudy);
-    }
-
-    private boolean isFirstDailyStudy(Integer studyId) {
-        return !dailyStudyRepository.existsInDailyStudyBy(studyId);
-    }
-
-    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calibrationTime, Injection injection, double halfLifeHours) {
-        long minutesBetween = ChronoUnit.MINUTES.between(calibrationTime, injection.getInjectedTime());
-        double deltaTHours = minutesBetween / 60.0; // Convert minutes to hours
-        double decayFactor = Math.pow(2, -deltaTHours / halfLifeHours);
-        return BigDecimal.valueOf(decayFactor);
-    }
-
-    private CalculationProfile getLastCalculationProfile(Integer studyId) {
-        List<CalculationProfile> calculationProfiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
-        return calculationProfiles.getLast();
-    }
-
-    private double getStudiesIsotopeHalfLifeDays(Integer isotopeId) {
-        Isotope isotope = isotopeRepository.getReferenceById(isotopeId);
-        BigDecimal halfLifeDaysBD = isotope.getHalfLifeHr();
-        return halfLifeDaysBD.doubleValue();
-    }
-
-    private Patient createAndSavePatient(PatientInjectionDto patientInjectionDto) {
-        String patientNationalId = patientInjectionDto.getPatientNationalId();
-        return patientRepository.findPatientBy(patientNationalId)
-                .orElseGet(() -> saveNewPatient(patientNationalId));
-    }
-
-    private Patient saveNewPatient(String patientNationalId) {
-        Patient newPatient = new Patient();
-        newPatient.setPatientNationalId(patientNationalId);
-        return patientRepository.save(newPatient);
-    }
-
-    private Injection createAndSaveInjection(PatientInjectionDto patientInjectionDto) {
-        Injection injection = patientInjectionMapper.toInjection(patientInjectionDto);
-        injectionRepository.save(injection);
-        return injection;
     }
 
     @Transactional
@@ -206,13 +168,11 @@ public class PatientInjectionService {
 
     @Transactional
     public void removePatientInjection(Integer patientInjectionId) {
-        Optional<DailyStudy> dailyStudy = dailyStudyRepository.findDailyStudyBy(patientInjectionId);
-        Integer studyId = dailyStudy.get().getStudy().getId();
-
+        DailyStudy dailyStudy = dailyStudyRepository.findDailyStudyBy(patientInjectionId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException("injectionId", patientInjectionId));
+        Integer studyId = dailyStudy.getStudy().getId();
         dailyStudyRepository.deleteByInjection(patientInjectionId);
-
         machineFillRepository.deleteByInjection(patientInjectionId);
-
         injectionRepository.deleteById(patientInjectionId);
         recalculateMachineFillsForStudy(studyId);
     }
@@ -295,6 +255,51 @@ public class PatientInjectionService {
         getNewInjectedActivity(calculationSetting, patientInjectionDto);
         getNewInjectionTime(studyId, calculationSetting, patientInjectionDto);
         return patientInjectionDto;
+    }
+
+    private Study getValidStudy(Integer studyId) {
+        return studyRepository.findStudyBy(studyId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException("studyId", studyId));
+    }
+
+    private boolean isFirstDailyStudy(Integer studyId) {
+        return !dailyStudyRepository.existsInDailyStudyBy(studyId);
+    }
+
+    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calibrationTime, Injection injection, double halfLifeHours) {
+        long minutesBetween = ChronoUnit.MINUTES.between(calibrationTime, injection.getInjectedTime());
+        double deltaTHours = minutesBetween / 60.0; // Convert minutes to hours
+        double decayFactor = Math.pow(2, -deltaTHours / halfLifeHours);
+        return BigDecimal.valueOf(decayFactor);
+    }
+
+    private CalculationProfile getLastCalculationProfile(Integer studyId) {
+        List<CalculationProfile> calculationProfiles = calculationProfileRepository.findCalculationProfilesBy(studyId);
+        return calculationProfiles.getLast();
+    }
+
+    private double getStudiesIsotopeHalfLifeDays(Integer isotopeId) {
+        Isotope isotope = isotopeRepository.getReferenceById(isotopeId);
+        BigDecimal halfLifeDaysBD = isotope.getHalfLifeHr();
+        return halfLifeDaysBD.doubleValue();
+    }
+
+    private Patient createAndSavePatient(PatientInjectionDto patientInjectionDto) {
+        String patientNationalId = patientInjectionDto.getPatientNationalId();
+        return patientRepository.findPatientBy(patientNationalId)
+                .orElseGet(() -> saveNewPatient(patientNationalId));
+    }
+
+    private Patient saveNewPatient(String patientNationalId) {
+        Patient newPatient = new Patient();
+        newPatient.setPatientNationalId(patientNationalId);
+        return patientRepository.save(newPatient);
+    }
+
+    private Injection createAndSaveInjection(PatientInjectionDto patientInjectionDto) {
+        Injection injection = patientInjectionMapper.toInjection(patientInjectionDto);
+        injectionRepository.save(injection);
+        return injection;
     }
 
     private void getNewInjectedActivity(CalculationSetting calculationSetting, PatientInjectionDto patientInjectionDto) {

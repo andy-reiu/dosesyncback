@@ -3,19 +3,18 @@ package ee.bcs.dosesyncback.service.machine;
 import ee.bcs.dosesyncback.controller.machine.dto.MachineDto;
 import ee.bcs.dosesyncback.controller.machine.dto.MachineInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForbiddenException;
-import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
+import ee.bcs.dosesyncback.infrastructure.exception.PrimaryKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.hospital.Hospital;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
-import ee.bcs.dosesyncback.persistence.machine.*;
-import jakarta.transaction.Transactional;
+import ee.bcs.dosesyncback.persistence.machine.Machine;
+import ee.bcs.dosesyncback.persistence.machine.MachineMapper;
 import ee.bcs.dosesyncback.persistence.machine.MachineRepository;
 import ee.bcs.dosesyncback.persistence.machine.MachineStatus;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import java.util.List;
 
@@ -29,66 +28,76 @@ public class MachineService {
 
     public List<MachineInfo> getAllActiveMachines() {
         List<Machine> machines = machineRepository.findMachinesBy(MachineStatus.ACTIVE.getCode());
-        List<MachineInfo> machineInfos = machineMapper.toMachineInfos(machines);
-
-        return machineInfos;
+        return machineMapper.toMachineInfos(machines);
     }
 
     public List<MachineDto> getAllMachines() {
         List<Machine> machines = machineRepository.findAll();
-        List<MachineDto> machineDtos = machineMapper.toMachineDtos(machines);
-
-        return machineDtos;
-    }
-
-    public MachineDto getMachineById(int machineId) {
-        Machine machine = machineRepository.findById(machineId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("machineId"), machineId));
-
-        return machineMapper.toMachineDto(machine);
+        return machineMapper.toMachineDtos(machines);
     }
 
     @Transactional
-    public Machine addMachine(MachineDto machineDto) {
-        Integer hospitalId = machineDto.getHospitalId();
-        if (hospitalId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "hospitalId must be provided");
-        }
-        if (machineRepository.serialNumberExistBy(machineDto.getMachineSerial())) {
-            throw new ForbiddenException("See masin on juba süsteemis!",
-                    403);
-        }
-        Hospital hospital = hospitalRepository.findById(hospitalId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("hospitalId"), hospitalId));
-        Machine machine = machineMapper.toMachine(machineDto);
+    public void addMachine(MachineDto machineDto) {
+        Machine machine = checkAndAddMachine(machineDto);
+        Hospital hospital = checkAndAddHospital(machineDto);
         machine.setHospital(hospital);
-        Machine saved = machineRepository.save(machine);
-
-        return saved;
+        machineRepository.save(machine);
     }
 
     @Transactional
-    public MachineDto updateMachineStatus(Integer id, String status) {
-        Machine machine = machineRepository.findById(id)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("id"), id));
-        machine.setStatus(status);
+    public void updateMachineStatus(Integer machineId, String machineStatus) {
+        Machine machine = getValidMachine(machineId);
+        machine.setStatus(machineStatus);
         machineRepository.save(machine);
-
-        return getMachineById(id);
     }
 
     @Transactional
     public MachineDto updateMachine(Integer machineId, MachineDto machineDto) {
-        Machine machine = machineRepository.findById(machineId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("machineId"), machineId));
-        machineMapper.updateFromMachineDto(machineDto, machine);
-        if(machineDto.getHospitalId() != null){
-            Hospital hospital = hospitalRepository.findById(machineDto.getHospitalId())
-                    .orElseThrow(() -> new ForeignKeyNotFoundException(("hospitalId"), machineDto.getHospitalId()));
+        Machine machine = getValidMachine(machineId);
+        machineMapper.updateFromMachineDto(machine, machineDto);
+        Integer hospitalId = machineDto.getHospitalId();
+        updateHospitalsMachine(hospitalId, machine);
+        machineRepository.save(machine);
+        return machineMapper.toMachineDto(machine);
+    }
+
+    private Hospital checkAndAddHospital(MachineDto machineDto) {
+        Integer hospitalId = machineDto.getHospitalId();
+        checkIfHospitalExists(hospitalId);
+        return getValidHospital(hospitalId);
+    }
+
+    private Machine checkAndAddMachine(MachineDto machineDto) {
+        checkIfMachineExists(machineDto);
+        return machineMapper.toMachine(machineDto);
+    }
+
+    private void checkIfHospitalExists(Integer hospitalId) {
+        if (hospitalId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "hospitalId must be provided");
+        }
+    }
+
+    private void checkIfMachineExists(MachineDto machineDto) {
+        if (machineRepository.serialNumberExistBy(machineDto.getMachineSerial())) {
+            throw new ForbiddenException("See masin on juba süsteemis!", 403);
+        }
+    }
+
+    private void updateHospitalsMachine(Integer hospitalId, Machine machine) {
+        if (hospitalId != null) {
+            Hospital hospital = getValidHospital(hospitalId);
             machine.setHospital(hospital);
         }
-        machineRepository.save(machine);
+    }
 
-        return machineMapper.toMachineDto(machine);
+    private Machine getValidMachine(int machineId) {
+        return machineRepository.findMachineBy(machineId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException(("machineId"), machineId));
+    }
+
+    private Hospital getValidHospital(Integer hospitalId) {
+        return hospitalRepository.findHospitalBy(hospitalId)
+                .orElseThrow(() -> new PrimaryKeyNotFoundException(("hospitalId"), hospitalId));
     }
 }
