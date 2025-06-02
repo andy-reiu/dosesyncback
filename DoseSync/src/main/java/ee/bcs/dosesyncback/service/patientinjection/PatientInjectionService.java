@@ -16,7 +16,6 @@ import ee.bcs.dosesyncback.persistence.isotope.Isotope;
 import ee.bcs.dosesyncback.persistence.isotope.IsotopeRepository;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFillRepository;
-import ee.bcs.dosesyncback.persistence.machinefillcalculationprofile.MachineFillCalculationProfileRepository;
 import ee.bcs.dosesyncback.persistence.patient.Patient;
 import ee.bcs.dosesyncback.persistence.patient.PatientRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
@@ -47,7 +46,6 @@ public class PatientInjectionService {
     private final CalculationProfileRepository calculationProfileRepository;
     private final MachineFillRepository machineFillRepository;
     private final StudyRepository studyRepository;
-    private final MachineFillCalculationProfileRepository machineFillCalculationProfileRepository;
     private final IsotopeRepository isotopeRepository;
     private final CalculationSettingRepository calculationSettingRepository;
 
@@ -213,13 +211,7 @@ public class PatientInjectionService {
 
         dailyStudyRepository.deleteByInjection(patientInjectionId);
 
-        // Fetch all machine fills for the injection
-        List<MachineFill> machineFills = machineFillRepository.findAllByInjectionId(patientInjectionId);
-
-        for (MachineFill fill : machineFills) {
-            machineFillCalculationProfileRepository.deleteByMachineFillId(fill.getId());
-            machineFillRepository.delete(fill);
-        }
+        machineFillRepository.deleteByInjection(patientInjectionId);
 
         injectionRepository.deleteById(patientInjectionId);
         recalculateMachineFillsForStudy(studyId);

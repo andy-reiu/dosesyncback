@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping("/user")
     @Operation(
-            summary = "Lisab uue kasutja.",
+            summary = "Lisab uue kasutaja.",
             description = "Tagastab uue kasutaja userId")
     public void createUserAccount(@RequestBody UserAccount userAccount) {
         userService.createUserAccount(userAccount);

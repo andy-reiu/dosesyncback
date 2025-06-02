@@ -80,6 +80,7 @@ public class StudyService {
         double smallestDiff = Double.MAX_VALUE;
         SimulationResult bestResult = null;
 
+        //todo: min ja max võtta andmebaasist.
         for (int i = 100; i <= 400; i++) {
             double candidate = i / 100.0;
             SimulationResult result = simulateMachineFill(studyId, candidate);

@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAccount {
-    private String roleId;
-    private String roleName;
+    private Integer roleId;
+    //private String roleName;
     private String username;
     private String password;
     private String userStatus;
-    private String hospitalId;
-    private String hospitalName;
+    private Integer hospitalId;
+    //private String hospitalName;
     private String occupationName;
     private String nationalId;
     private String firstName;

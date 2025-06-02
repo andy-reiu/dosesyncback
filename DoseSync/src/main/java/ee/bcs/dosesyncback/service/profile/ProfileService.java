@@ -60,6 +60,7 @@ public class ProfileService {
         return profileMapper.toProfileUpdateInfo(profile);
     }
 
+    @Transactional
     public void updateProfile(ProfileUpdateInfo profileUpdateInfo) {
         Profile profile = profileRepository.findById(profileUpdateInfo.getProfileId())
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileUpdateInfo.getProfileId()));
@@ -82,7 +83,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public void updateProfile(Integer userId, ProfileDto profileDto) {
+    public void updateAccountProfile(Integer userId, ProfileDto profileDto) {
         Profile profile = profileRepository.findProfileBy(userId)
                 .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
         profileMapper.toUpdateProfile(profile, profileDto);
@@ -98,5 +99,5 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 }
-}
+
 

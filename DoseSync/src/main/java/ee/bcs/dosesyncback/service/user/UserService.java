@@ -39,12 +39,12 @@ public class UserService {
     @Transactional
     public void createUserAccount(UserAccount userAccount) {
         User user = userMapper.toUser(userAccount);
-        Role role = roleRepository.findRoleBy(userAccount.getRoleName());
+        Role role = roleRepository.getReferenceById(userAccount.getRoleId());
         user.setRole(role);
         userRepository.save(user);
 
         Profile profile = profileMapper.toProfile(userAccount);
-        Hospital hospital = hospitalRepository.findHospitalBy(userAccount.getHospitalName());
+        Hospital hospital = hospitalRepository.getReferenceById(userAccount.getHospitalId());
         profile.setHospital(hospital);
         profile.setUser(user);
         profileRepository.save(profile);
