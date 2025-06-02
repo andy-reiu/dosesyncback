@@ -16,7 +16,6 @@ import ee.bcs.dosesyncback.persistence.isotope.Isotope;
 import ee.bcs.dosesyncback.persistence.isotope.IsotopeRepository;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFill;
 import ee.bcs.dosesyncback.persistence.machinefill.MachineFillRepository;
-import ee.bcs.dosesyncback.persistence.machinefillcalculationprofile.MachineFillCalculationProfileRepository;
 import ee.bcs.dosesyncback.persistence.patient.Patient;
 import ee.bcs.dosesyncback.persistence.patient.PatientRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
@@ -47,7 +46,6 @@ public class PatientInjectionService {
     private final CalculationProfileRepository calculationProfileRepository;
     private final MachineFillRepository machineFillRepository;
     private final StudyRepository studyRepository;
-    private final MachineFillCalculationProfileRepository machineFillCalculationProfileRepository;
     private final IsotopeRepository isotopeRepository;
     private final CalculationSettingRepository calculationSettingRepository;
 
@@ -149,10 +147,10 @@ public class PatientInjectionService {
         return !dailyStudyRepository.existsInDailyStudyBy(studyId);
     }
 
-    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calculationProfile, Injection injection, double halfLifeDays) {
-        long minutesBetween = ChronoUnit.MINUTES.between(calculationProfile, injection.getInjectedTime());
-        double deltaTDays = minutesBetween / 1440.0; // Convert minutes to days
-        double decayFactor = Math.pow(2, -deltaTDays / halfLifeDays);
+    private BigDecimal calculateDecayFactorBetweenTimes(LocalTime calibrationTime, Injection injection, double halfLifeHours) {
+        long minutesBetween = ChronoUnit.MINUTES.between(calibrationTime, injection.getInjectedTime());
+        double deltaTHours = minutesBetween / 60.0; // Convert minutes to hours
+        double decayFactor = Math.pow(2, -deltaTHours / halfLifeHours);
         return BigDecimal.valueOf(decayFactor);
     }
 
@@ -213,15 +211,8 @@ public class PatientInjectionService {
 
         dailyStudyRepository.deleteByInjection(patientInjectionId);
 
-        MachineFill machineFill = machineFillRepository.findMachineFillBy(patientInjectionId);
-
-        //Foreign key constraint violations, check if its null or not
-        if (machineFill != null) {
-            machineFillCalculationProfileRepository.deleteByMachineFillId(machineFill.getId());
-            machineFillRepository.delete(machineFill);
-        }
-
         machineFillRepository.deleteByInjection(patientInjectionId);
+
         injectionRepository.deleteById(patientInjectionId);
         recalculateMachineFillsForStudy(studyId);
     }
@@ -353,7 +344,7 @@ public class PatientInjectionService {
         patientInjectionDto.setAcc(itkACC);
     }
 
-    public static String giveRandomString() {
+    private static String giveRandomString() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 3;
@@ -366,7 +357,7 @@ public class PatientInjectionService {
         return buffer.toString();
     }
 
-    public static String getNewStudyAcc(String accRoot) {
+    private static String getNewStudyAcc(String accRoot) {
         String randomValueAsString = giveRandomString();
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
         String dateToday = df.format(new Date());

@@ -8,9 +8,8 @@ import ee.bcs.dosesyncback.service.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-@RequestMapping("/api")
+
 @RestController
 @RequiredArgsConstructor
 public class ProfileController {
@@ -37,12 +36,16 @@ public class ProfileController {
         return profileService.getUserProfile(userId);
     }
 
-    @GetMapping("/profile-current")
+    @PutMapping("/account-profile/update")
+    public void updateAccountProfile(@RequestParam Integer userId, @RequestBody ProfileDto profileDto){
+        profileService.updateAccountProfile(userId, profileDto);
+    }
+    @GetMapping("/api/profile-current")
     public ProfileUpdateInfo getCurrentUserProfile(@RequestParam Integer profileId) {
         return profileService.getCurrentUserProfile(profileId);
     }
 
-    @PutMapping("/profile-update")
+    @PutMapping("/api/profile-update")
     public void updateProfile(@RequestBody ProfileUpdateInfo profileUpdateInfo) {
         profileService.updateProfile(profileUpdateInfo);
     }
