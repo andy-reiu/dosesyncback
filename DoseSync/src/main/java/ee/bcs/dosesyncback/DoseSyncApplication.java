@@ -9,5 +9,4 @@ public class DoseSyncApplication {
     public static void main(String[] args) {
         SpringApplication.run(DoseSyncApplication.class, args);
     }
-
 }
