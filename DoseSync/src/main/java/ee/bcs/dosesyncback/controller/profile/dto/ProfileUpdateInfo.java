@@ -11,6 +11,7 @@ public class ProfileUpdateInfo {
     private String nationalId;
     private String email;
     private String phoneNumber;
+    private String hospitalName;
 
     private String oldPassword;
     private String newPassword;

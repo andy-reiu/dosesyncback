@@ -10,6 +10,9 @@ import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
+import ee.bcs.dosesyncback.persistence.userimage.UserImage;
+import ee.bcs.dosesyncback.persistence.userimage.UserImageMapper;
+import ee.bcs.dosesyncback.persistence.userimage.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,9 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
+    private final UserImageRepository userImageRepository;
+    private final UserImageMapper userImageMapper;
+
 
     public ProfileStudyInfo getProfile(Integer studyId) {
         Study study = studyRepository.getReferenceById(studyId);
@@ -66,6 +72,17 @@ public class ProfileService {
             if(!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())){
                 profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
             }
+        }
+
+        if (profileUpdateInfo.getImageData() != null) {
+            // Use mapper to convert base64 string to UserImage (with byte[] imageData)
+            UserImage newImage = userImageMapper.toUserImage(profileUpdateInfo);
+
+            // Link to profile
+            newImage.setProfile(profile);
+
+            // Optional: If you're enforcing 1 image per profile, delete old one or overwrite
+            userImageRepository.save(newImage);
         }
 
        profileRepository.save(profile);
