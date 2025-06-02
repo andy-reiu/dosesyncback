@@ -4,26 +4,22 @@ import ee.bcs.dosesyncback.controller.profile.dto.ProfileDto;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
-import ee.bcs.dosesyncback.persistence.hospital.Hospital;
-import ee.bcs.dosesyncback.persistence.hospital.HospitalMapper;
-import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
 import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
-import ee.bcs.dosesyncback.persistence.role.Role;
-import ee.bcs.dosesyncback.persistence.role.RoleRepository;
 import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
-import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ee.bcs.dosesyncback.persistence.userimage.UserImage;
 import ee.bcs.dosesyncback.persistence.userimage.UserImageMapper;
 import ee.bcs.dosesyncback.persistence.userimage.UserImageRepository;
+import ee.bcs.dosesyncback.util.ImageConverter;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +29,6 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
-    private final HospitalMapper hospitalMapper;
-    private final HospitalRepository hospitalRepository;
-    private final RoleRepository roleRepository;
     private final UserImageRepository userImageRepository;
     private final UserImageMapper userImageMapper;
 
@@ -62,7 +55,18 @@ public class ProfileService {
     public ProfileUpdateInfo getCurrentUserProfile(Integer profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileId));
-        return profileMapper.toProfileUpdateInfo(profile);
+
+        ProfileUpdateInfo profileUpdateInfo = profileMapper.toProfileUpdateInfo(profile);
+        Optional<UserImage> userImage = userImageRepository.findUserImageBy(profileId);
+        if (userImage.isPresent()) {
+            byte[] bytes = userImage.get().getData();
+            String imageDataString = ImageConverter.bytesToString(bytes);
+            profileUpdateInfo.setImageData(imageDataString);
+        } else {
+            profileUpdateInfo.setImageData(null);
+        }
+
+        return profileUpdateInfo;
     }
 
     @Transactional
@@ -83,37 +87,39 @@ public class ProfileService {
                 profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
             }
         }
+
+        Optional<UserImage> userImage = userImageRepository.findUserImageBy(profile.getId());
+        String newImageData;
+
         if (profileUpdateInfo.getImageData() != null) {
-            // Use mapper to convert base64 string to UserImage (with byte[] imageData)
+            newImageData = profileUpdateInfo.getImageData().trim();
+        } else {
+            newImageData = null;
+        }
+
+        boolean clientSentNoImage = newImageData.isEmpty();
+        boolean storedImageExists = userImage.isPresent();
+
+        if (storedImageExists && clientSentNoImage) {
+
+            userImageRepository.deleteUserImageBy(profile);
+
+        } else if (storedImageExists && !clientSentNoImage) {
+
+            UserImage toUpdate = userImage.get();
+            byte[] raw = ImageConverter.stringToBytes(newImageData);
+            toUpdate.setData(raw);
+            userImageRepository.save(toUpdate);
+
+        } else if (!storedImageExists && !clientSentNoImage) {
+
             UserImage newImage = userImageMapper.toUserImage(profileUpdateInfo);
-
-            // Link to profile
             newImage.setProfile(profile);
-
-            // Optional: If you're enforcing 1 image per profile, delete old one or overwrite
             userImageRepository.save(newImage);
         }
 
         profileRepository.save(profile);
     }
 
-    @Transactional
-    public void updateAccountProfile(Integer userId, ProfileDto profileDto) {
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
-        profileMapper.toUpdateProfile(profile, profileDto);
-
-        Hospital hospital = hospitalRepository.getReferenceById(profileDto.getHospitalId());
-        profile.setHospital(hospital);
-
-        Role role = roleRepository.getReferenceById(profileDto.getRoleId());
-        User user = userRepository.getReferenceById(userId);
-        user.setRole(role);
-
-        userRepository.save(user);
-        profileRepository.save(profile);
-    }
 }
-
-
 

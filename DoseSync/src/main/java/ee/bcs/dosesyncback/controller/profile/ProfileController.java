@@ -36,10 +36,10 @@ public class ProfileController {
         return profileService.getUserProfile(userId);
     }
 
-    @PutMapping("/account-profile/update")
-    public void updateAccountProfile(@RequestParam Integer userId, @RequestBody ProfileDto profileDto){
-        profileService.updateAccountProfile(userId, profileDto);
-    }
+//    @PutMapping("/account-profile/update")
+//    public void updateAccountProfile(@RequestParam Integer userId, @RequestBody ProfileDto profileDto){
+//        profileService.updateAccountProfile(userId, profileDto);
+//    }
     @GetMapping("/api/profile-current")
     public ProfileUpdateInfo getCurrentUserProfile(@RequestParam Integer profileId) {
         return profileService.getCurrentUserProfile(profileId);

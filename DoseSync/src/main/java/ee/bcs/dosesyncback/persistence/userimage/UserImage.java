@@ -21,6 +21,7 @@ public class UserImage {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+
     @NotNull
     @Column(name = "data", nullable = false)
     private byte[] data;
