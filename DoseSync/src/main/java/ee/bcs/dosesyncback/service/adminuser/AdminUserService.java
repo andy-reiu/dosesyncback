@@ -1,7 +1,6 @@
 package ee.bcs.dosesyncback.service.adminuser;
 
 import ee.bcs.dosesyncback.controller.adminuser.dto.AdminUserInfo;
-import ee.bcs.dosesyncback.controller.user.dto.UserDto;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileRepository;
@@ -23,47 +22,44 @@ public class AdminUserService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
-    private final UserMapper userMapper;
 
     public List<AdminUserInfo> getAllUserProfilesForAdmin() {
         List<User> users = userRepository.findAll();
         List<AdminUserInfo> result = new ArrayList<>();
-
         for (User user : users) {
             Profile profile = profileRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new ResourceAccessException("Obj not found"));
-            AdminUserInfo adminUserInfo = new AdminUserInfo();
-            adminUserInfo.setUserId(user.getId());
-            adminUserInfo.setUsername(user.getUsername());
-            adminUserInfo.setUserStatus(user.getStatus());
-            adminUserInfo.setRoleId(user.getRole().getId());
-            adminUserInfo.setRoleName(user.getRole().getName());
-
-            if (profile != null) {
-                adminUserInfo.setProfileId(profile.getId());
-                adminUserInfo.setFirstName(profile.getFirstName());
-                adminUserInfo.setLastName(profile.getLastName());
-                adminUserInfo.setNationalId(profile.getNationalId());
-            }
-            result.add(adminUserInfo);
+            addUserToResult(user, profile, result);
         }
         return result;
     }
 
-    public UserDto getUserById(int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("userId"), userId));
+    private void addUserToResult(User user, Profile profile, List<AdminUserInfo> result) {
+        AdminUserInfo adminUserInfo = new AdminUserInfo();
+        adminUserInfo.setUserId(user.getId());
+        adminUserInfo.setUsername(user.getUsername());
+        adminUserInfo.setUserStatus(user.getStatus());
+        adminUserInfo.setRoleId(user.getRole().getId());
+        adminUserInfo.setRoleName(user.getRole().getName());
 
-        return userMapper.toUserDto(user);
+        if (profile != null) {
+            adminUserInfo.setProfileId(profile.getId());
+            adminUserInfo.setFirstName(profile.getFirstName());
+            adminUserInfo.setLastName(profile.getLastName());
+            adminUserInfo.setNationalId(profile.getNationalId());
+        }
+        result.add(adminUserInfo);
     }
 
     @Transactional
-    public UserDto updateUserStatus(Integer userId, String userStatus) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("userId"), userId));
+    public void updateUserStatus(Integer userId, String userStatus) {
+        User user = getValidUser(userId);
         user.setStatus(userStatus);
         userRepository.save(user);
+    }
 
-        return getUserById(userId);
+    private User getValidUser(Integer userId) {
+        return userRepository.findUserBy(userId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("userId"), userId));
     }
 }

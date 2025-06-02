@@ -7,6 +7,7 @@ import org.mapstruct.*;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserImageMapper {
+
     @Mapping(source = "imageData", target = "data", qualifiedByName = "toByteArray")
     UserImage toUserImage(ProfileUpdateInfo profileUpdateInfo);
 
@@ -15,6 +16,4 @@ public interface UserImageMapper {
 
         return ImageConverter.stringToBytes(imageData);
     }
-
-
 }

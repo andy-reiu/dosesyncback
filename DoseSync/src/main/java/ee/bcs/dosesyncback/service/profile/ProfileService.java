@@ -5,7 +5,6 @@ import ee.bcs.dosesyncback.controller.profile.dto.ProfileStudyInfo;
 import ee.bcs.dosesyncback.controller.profile.dto.ProfileUpdateInfo;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.hospital.Hospital;
-import ee.bcs.dosesyncback.persistence.hospital.HospitalMapper;
 import ee.bcs.dosesyncback.persistence.hospital.HospitalRepository;
 import ee.bcs.dosesyncback.persistence.profile.Profile;
 import ee.bcs.dosesyncback.persistence.profile.ProfileMapper;
@@ -30,27 +29,23 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
-    private final HospitalMapper hospitalMapper;
     private final HospitalRepository hospitalRepository;
     private final RoleRepository roleRepository;
 
     public ProfileStudyInfo getProfile(Integer studyId) {
         Study study = studyRepository.getReferenceById(studyId);
         Integer userId = study.getUser().getId();
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+        Profile profile = getValidProfile(userId);
         return profileMapper.toProfileStudyInfo(profile);
     }
 
     public List<ProfileDto> getAllProfiles() {
         List<Profile> profiles = profileRepository.findAll();
-        List<ProfileDto> profileDtos = profileMapper.toProfileDtos(profiles);
-        return profileDtos;
+        return profileMapper.toProfileDtos(profiles);
     }
 
     public ProfileDto getUserProfile(Integer userId) {
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+        Profile profile = getValidProfile(userId);
         return profileMapper.toProfileDto(profile);
     }
 
@@ -60,11 +55,12 @@ public class ProfileService {
         return profileMapper.toProfileUpdateInfo(profile);
     }
 
+    @Transactional
     public void updateProfile(ProfileUpdateInfo profileUpdateInfo) {
         Profile profile = profileRepository.findById(profileUpdateInfo.getProfileId())
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileUpdateInfo.getProfileId()));
 
-        if(profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())){
+        if (profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())) {
             profile.setEmail(profileUpdateInfo.getEmail());
         }
 
@@ -73,30 +69,41 @@ public class ProfileService {
         }
 
         if (profileUpdateInfo.getOldPassword() != null && profileUpdateInfo.getNewPassword() != null) {
-            if(!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())){
+            if (!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())) {
                 profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
             }
         }
 
-       profileRepository.save(profile);
+        profileRepository.save(profile);
     }
 
     @Transactional
-    public void updateProfile(Integer userId, ProfileDto profileDto) {
-        Profile profile = profileRepository.findProfileBy(userId)
-                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
+    public void updateAccountProfile(Integer userId, ProfileDto profileDto) {
+        Profile profile = getValidProfile(userId);
         profileMapper.toUpdateProfile(profile, profileDto);
+        updateProfileHospital(profile, profileDto);
+        profileRepository.save(profile);
+        User user = updateUserRole(userId, profileDto);
+        userRepository.save(user);
+    }
 
-        Hospital hospital = hospitalRepository.getReferenceById(profileDto.getHospitalId());
-        profile.setHospital(hospital);
-
-        Role role = roleRepository.getReferenceById(profileDto.getRoleId());
+    private User updateUserRole(Integer userId, ProfileDto profileDto) {
+        Integer roleId = profileDto.getRoleId();
+        Role role = roleRepository.getReferenceById(roleId);
         User user = userRepository.getReferenceById(userId);
         user.setRole(role);
+        return user;
+    }
 
-        userRepository.save(user);
-        profileRepository.save(profile);
+    private void updateProfileHospital(Profile profile, ProfileDto profileDto) {
+        Hospital hospital = hospitalRepository.getReferenceById(profileDto.getHospitalId());
+        profile.setHospital(hospital);
+    }
+
+    private Profile getValidProfile(Integer userId) {
+        return profileRepository.findProfileBy(userId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException("userId", userId));
     }
 }
-}
+
 

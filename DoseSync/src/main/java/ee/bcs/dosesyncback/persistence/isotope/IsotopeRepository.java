@@ -4,8 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IsotopeRepository extends JpaRepository<Isotope, Integer> {
+
+    @Query("select i from Isotope i where i.id = :isotopeId")
+    Optional<Isotope> findIsotopeBy(Integer isotopeId);
 
     @Query("select i from Isotope i")
     List<Isotope> findAll();

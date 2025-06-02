@@ -32,39 +32,55 @@ public class UserService {
 
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = userMapper.toUserDtos(users);
-        return userDtos;
-    }
-
-    @Transactional
-    public void createUserAccount(UserAccount userAccount) {
-        User user = userMapper.toUser(userAccount);
-        Role role = roleRepository.findRoleBy(userAccount.getRoleName());
-        user.setRole(role);
-        userRepository.save(user);
-
-        Profile profile = profileMapper.toProfile(userAccount);
-        Hospital hospital = hospitalRepository.findHospitalBy(userAccount.getHospitalName());
-        profile.setHospital(hospital);
-        profile.setUser(user);
-        profileRepository.save(profile);
+        return userMapper.toUserDtos(users);
     }
 
     public UserDto findUser(Integer userId) {
         User user = getValidUserBy(userId);
         UserDto userDto = userMapper.toUserDto(user);
+        userDto.setPassword("");
         return userDto;
     }
 
+    @Transactional
+    public void createUserAccount(UserAccount userAccount) {
+        User user = CreateAndSaveUser(userAccount);
+        CreateAndSaveProfile(userAccount, user);
+    }
+
+    @Transactional
+    public void updateUser(Integer selectedUserId, UserDto userDto) {
+        User user = getValidUserBy(selectedUserId);
+        UpdateAndSaveUser(userDto, user);
+    }
+
     private User getValidUserBy(Integer userId) {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new PrimaryKeyNotFoundException("userId", userId));
+    }
+
+    private void CreateAndSaveProfile(UserAccount userAccount, User user) {
+        Profile profile = CreateProfile(userAccount);
+        profile.setUser(user);
+        profileRepository.save(profile);
+    }
+
+    private Profile CreateProfile(UserAccount userAccount) {
+        Profile profile = profileMapper.toProfile(userAccount);
+        Hospital hospital = hospitalRepository.getReferenceById(userAccount.getHospitalId());
+        profile.setHospital(hospital);
+        return profile;
+    }
+
+    private User CreateAndSaveUser(UserAccount userAccount) {
+        User user = userMapper.toUser(userAccount);
+        Role role = roleRepository.getReferenceById(userAccount.getRoleId());
+        user.setRole(role);
+        userRepository.save(user);
         return user;
     }
 
-    public void updateUser(Integer selectedUserId, UserDto userDto) {
-        User user = userRepository.findUserBy(selectedUserId).orElseThrow(
-                () -> new PrimaryKeyNotFoundException("selectedUserId", selectedUserId));
+    private void UpdateAndSaveUser(UserDto userDto, User user) {
         Role role = roleRepository.findRoleBy(userDto.getRoleName());
         user.setRole(role);
         userMapper.partialUpdate(user, userDto);

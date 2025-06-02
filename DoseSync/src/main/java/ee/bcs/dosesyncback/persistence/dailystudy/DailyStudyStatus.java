@@ -9,5 +9,6 @@ public enum DailyStudyStatus {
     PENDING("A"),
     IN_PROGRESS("B"),
     COMPLETED("D");
+
     private final String code;
 }

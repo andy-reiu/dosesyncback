@@ -1,8 +1,8 @@
 package ee.bcs.dosesyncback.service.calculationsetting;
 
+import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
 import ee.bcs.dosesyncback.infrastructure.exception.ForeignKeyNotFoundException;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSetting;
-import ee.bcs.dosesyncback.controller.calculationsetting.dto.CalculationSettingDto;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingMapper;
 import ee.bcs.dosesyncback.persistence.calculationsetting.CalculationSettingRepository;
 import jakarta.transaction.Transactional;
@@ -18,33 +18,30 @@ public class CalculationSettingService {
     private final CalculationSettingRepository calculationSettingRepository;
     private final CalculationSettingMapper calculationSettingMapper;
 
-
     public List<CalculationSettingDto> getAllCalculationSettings() {
-        //pull all calculationsetting entities
         List<CalculationSetting> calculationSettings = calculationSettingRepository.findAll();
-        //map them to DTOs(and capture result)
-        List<CalculationSettingDto> calculationSettingDtos = calculationSettingMapper.toCalculationSettingDtos(calculationSettings);
-
-        return calculationSettingDtos;
+        return calculationSettingMapper.toCalculationSettingDtos(calculationSettings);
     }
 
     @Transactional
-    public CalculationSetting addCalculationSetting(CalculationSettingDto calculationSettingDto) {
-
+    public void addCalculationSetting(CalculationSettingDto calculationSettingDto) {
         CalculationSetting calculateSetting = calculationSettingMapper.toCalculateSetting(calculationSettingDto);
-
-        CalculationSetting saved = calculationSettingRepository.save(calculateSetting);
-        return saved;
+        calculationSettingRepository.save(calculateSetting);
     }
-    @Transactional
-    public CalculationSettingDto updateCalculationSetting(Integer id, CalculationSettingDto calculationSettingDto) {
-        CalculationSetting calculationSetting = calculationSettingRepository.findById(id)
-                .orElseThrow(() -> new ForeignKeyNotFoundException(("Id"), id));
 
+    @Transactional
+    public CalculationSettingDto updateCalculationSetting(Integer calculationSettingId, CalculationSettingDto calculationSettingDto) {
+        CalculationSetting calculationSetting = getValidCalculationSetting(calculationSettingId);
+        calculationSettingMapping(calculationSetting, calculationSettingDto);
+        calculationSettingRepository.save(calculationSetting);
+        return calculationSettingMapper.toCalculationSettingDto(calculationSetting);
+    }
+
+    private void calculationSettingMapping(CalculationSetting calculationSetting, CalculationSettingDto calculationSettingDto) {
         if (calculationSettingDto.getSettingMinActivity() != null) {
             calculationSetting.setMinActivity(calculationSettingDto.getSettingMinActivity());
         }
-        if(calculationSettingDto.getSettingMaxActivity() != null) {
+        if (calculationSettingDto.getSettingMaxActivity() != null) {
             calculationSetting.setMaxActivity(calculationSettingDto.getSettingMaxActivity());
         }
         if (calculationSettingDto.getSettingMinVolume() != null) {
@@ -65,9 +62,10 @@ public class CalculationSettingService {
         if (calculationSettingDto.getSettingMachineVolumeMin() != null) {
             calculationSetting.setMachineVolumeMin(calculationSettingDto.getSettingMachineVolumeMin());
         }
+    }
 
-        calculationSettingRepository.save(calculationSetting);
-
-        return calculationSettingMapper.toCalculationSettingDto(calculationSetting);
+    private CalculationSetting getValidCalculationSetting(Integer calculationSettingId) {
+        return calculationSettingRepository.findCalculationSettingBy(calculationSettingId)
+                .orElseThrow(() -> new ForeignKeyNotFoundException(("Id"), calculationSettingId));
     }
 }

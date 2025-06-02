@@ -11,9 +11,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineInfo implements Serializable {
+public class MachineInfo{
     private Integer machineId;
-    @NotNull
-    @Size(max = 255)
     private String machineName;
 }
