@@ -15,11 +15,16 @@ import ee.bcs.dosesyncback.persistence.study.Study;
 import ee.bcs.dosesyncback.persistence.study.StudyRepository;
 import ee.bcs.dosesyncback.persistence.user.User;
 import ee.bcs.dosesyncback.persistence.user.UserRepository;
+import ee.bcs.dosesyncback.persistence.userimage.UserImage;
+import ee.bcs.dosesyncback.persistence.userimage.UserImageMapper;
+import ee.bcs.dosesyncback.persistence.userimage.UserImageRepository;
+import ee.bcs.dosesyncback.util.ImageConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,8 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final HospitalRepository hospitalRepository;
     private final RoleRepository roleRepository;
+    private final UserImageRepository userImageRepository;
+    private final UserImageMapper userImageMapper;
 
     public ProfileStudyInfo getProfile(Integer studyId) {
         Study study = studyRepository.getReferenceById(studyId);
@@ -52,7 +59,18 @@ public class ProfileService {
     public ProfileUpdateInfo getCurrentUserProfile(Integer profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileId));
-        return profileMapper.toProfileUpdateInfo(profile);
+
+        ProfileUpdateInfo profileUpdateInfo = profileMapper.toProfileUpdateInfo(profile);
+        Optional<UserImage> userImage = userImageRepository.findUserImageBy(profileId);
+        if (userImage.isPresent()) {
+            byte[] bytes = userImage.get().getData();
+            String imageDataString = ImageConverter.bytesToString(bytes);
+            profileUpdateInfo.setImageData(imageDataString);
+        } else {
+            profileUpdateInfo.setImageData(null);
+        }
+
+        return profileUpdateInfo;
     }
 
     @Transactional
@@ -60,7 +78,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileUpdateInfo.getProfileId())
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileUpdateInfo.getProfileId()));
 
-        if (profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())) {
+        if(profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())){
             profile.setEmail(profileUpdateInfo.getEmail());
         }
 
@@ -69,9 +87,39 @@ public class ProfileService {
         }
 
         if (profileUpdateInfo.getOldPassword() != null && profileUpdateInfo.getNewPassword() != null) {
-            if (!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())) {
+            if(!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())){
                 profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
             }
+        }
+
+        Optional<UserImage> userImage = userImageRepository.findUserImageBy(profile.getId());
+        String newImageData;
+
+        if (profileUpdateInfo.getImageData() != null) {
+            newImageData = profileUpdateInfo.getImageData().trim();
+        } else {
+            newImageData = null;
+        }
+
+        boolean clientSentNoImage = newImageData.isEmpty();
+        boolean storedImageExists = userImage.isPresent();
+
+        if (storedImageExists && clientSentNoImage) {
+
+            userImageRepository.deleteUserImageBy(profile);
+
+        } else if (storedImageExists && !clientSentNoImage) {
+
+            UserImage toUpdate = userImage.get();
+            byte[] raw = ImageConverter.stringToBytes(newImageData);
+            toUpdate.setData(raw);
+            userImageRepository.save(toUpdate);
+
+        } else if (!storedImageExists && !clientSentNoImage) {
+
+            UserImage newImage = userImageMapper.toUserImage(profileUpdateInfo);
+            newImage.setProfile(profile);
+            userImageRepository.save(newImage);
         }
 
         profileRepository.save(profile);
