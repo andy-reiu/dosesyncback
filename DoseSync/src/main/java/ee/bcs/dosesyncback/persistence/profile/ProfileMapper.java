@@ -41,6 +41,8 @@ public interface ProfileMapper {
     @Mapping(source = "nationalId", target = "nationalId")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "hospital.name", target = "hospitalName")
+
     ProfileUpdateInfo toProfileUpdateInfo(Profile profile);
 
     @Mapping(source = "occupationName", target = "occupation")
