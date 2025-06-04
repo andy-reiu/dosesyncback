@@ -38,30 +38,14 @@ public class CalculationSettingService {
     }
 
     private void calculationSettingMapping(CalculationSetting calculationSetting, CalculationSettingDto calculationSettingDto) {
-        if (calculationSettingDto.getSettingMinActivity() != null) {
-            calculationSetting.setMinActivity(calculationSettingDto.getSettingMinActivity());
-        }
-        if (calculationSettingDto.getSettingMaxActivity() != null) {
-            calculationSetting.setMaxActivity(calculationSettingDto.getSettingMaxActivity());
-        }
-        if (calculationSettingDto.getSettingMinVolume() != null) {
-            calculationSetting.setMinVolume(calculationSettingDto.getSettingMinVolume());
-        }
-        if (calculationSettingDto.getActivityPerKg() != null) {
-            calculationSetting.setActivityPerKg(calculationSettingDto.getActivityPerKg());
-        }
-        if (calculationSettingDto.getDefaultPatientWeight() != null) {
-            calculationSetting.setDefaultPatientWeight(calculationSettingDto.getDefaultPatientWeight());
-        }
-        if (calculationSettingDto.getInjectionInterval() != null) {
-            calculationSetting.setInjectionInterval(calculationSettingDto.getInjectionInterval());
-        }
-        if (calculationSettingDto.getSettingMachineVolumeMax() != null) {
-            calculationSetting.setMachineVolumeMax(calculationSettingDto.getSettingMachineVolumeMax());
-        }
-        if (calculationSettingDto.getSettingMachineVolumeMin() != null) {
-            calculationSetting.setMachineVolumeMin(calculationSettingDto.getSettingMachineVolumeMin());
-        }
+        calculationSetting.setMinActivity(calculationSettingDto.getSettingMinActivity());
+        calculationSetting.setMaxActivity(calculationSettingDto.getSettingMaxActivity());
+        calculationSetting.setMinVolume(calculationSettingDto.getSettingMinVolume());
+        calculationSetting.setActivityPerKg(calculationSettingDto.getActivityPerKg());
+        calculationSetting.setDefaultPatientWeight(calculationSettingDto.getDefaultPatientWeight());
+        calculationSetting.setInjectionInterval(calculationSettingDto.getInjectionInterval());
+        calculationSetting.setMachineVolumeMax(calculationSettingDto.getSettingMachineVolumeMax());
+        calculationSetting.setMachineVolumeMin(calculationSettingDto.getSettingMachineVolumeMin());
     }
 
     private CalculationSetting getValidCalculationSetting(Integer calculationSettingId) {
