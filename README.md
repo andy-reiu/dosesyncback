@@ -4,13 +4,17 @@ Planning of the patients in the Nuclear Department for better treatment and cost
 It allows one to plan today's or week's schedule - when to inject, how much to inject, and see how much remains after injection.
 It also has calculations to improve the amount that can be injected.
 
-There is user management, profile, and admin settings for calculation, hospital, and isotope management.
+There are user management, profile, and admin settings for calculation, hospital, and isotope management.
 Additionally, DoseSync provides user management with two roles:  
 - **Admins** (Doctors or Physicists) who can create and modify plans  
 - **Technicians** who can view results only
 Information then can be stored in the local database or saved as PDF.
 
 ----------------------------------------------------------------------------
+DoseSync includes a separate frontend application for managing schedules, dose planning, and user roles.
+The frontend communicates with this backend via REST APIs, repository is available at:  
+`https://github.com/andy-reiu/dosesyncfront`
+
 DoseSync is built with Spring Boot and Java 21. 
 This repository contains the server-side codebase that handles data storage, REST APIs, and application logic.
 🚀 Features
@@ -49,6 +53,17 @@ Getting Started
 spring.datasource.url=jdbc:postgresql://localhost:5432/dosesync
 spring.datasource.username=yourusername
 spring.datasource.password=yourpassword
+```
+
+🚀 Roadmap
+
+- Enhance authentication and authorization mechanisms (JWT)  
+- Add additional user roles with customized permissions  
+- Implement a notification system to remind staff about scheduled injections  
+- Develop a frontend application for easier interaction with the backend  
+- Improve dose calculation algorithms for increased accuracy  
+- Add detailed audit logging and activity tracking  
+- Optimize performance for handling larger hospital datasets
 
 ## 👤 Authors
 
