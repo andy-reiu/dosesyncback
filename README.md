@@ -8,7 +8,7 @@ There are user management, profile, and admin settings for calculation, hospital
 Additionally, DoseSync provides user management with two roles:  
 - **Admins** (Doctors or Physicists) who can create and modify plans  
 - **Technicians** who can view results only
-Information then can be stored in the local database or saved as PDF.  (Examle:
+Information then can be stored in the local database or saved as PDF.  (Example:
 [2025-06-03.FPyl study-29.pdf](https://github.com/user-attachments/files/20592176/2025-06-03.FPyl.study-29.pdf))
 
 ----------------------------------------------------------------------------
