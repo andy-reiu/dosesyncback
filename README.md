@@ -13,6 +13,7 @@ Information then can be stored in the local database or saved as PDF.
 
 ----------------------------------------------------------------------------
 ![HomeView](https://github.com/user-attachments/assets/0168bd82-bac0-47ab-bf3f-b5cfeff6674e)
+![StudyView](https://github.com/user-attachments/assets/abfe7e0b-73b7-4cc3-bb30-4ddc7441fc6a)
 ![AdminView](https://github.com/user-attachments/assets/8b430a67-bddf-4925-9b6c-317ca2348c42)
 DoseSync includes a separate frontend application for managing schedules, dose planning, and user roles.
 The frontend communicates with this backend via REST APIs, repository is available at:  
