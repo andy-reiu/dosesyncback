@@ -70,5 +70,3 @@ spring.datasource.password=yourpassword
 - **Andy Reiu** – *El Capitan* – [andy-reiu](https://github.com/andy-reiu)
 - **Kevin Kuusk** – *El Equipo* – [baluuba](https://github.com/baluuba)
 - **Olga Kuvatova** – *El Equipo* – [apelsina365](https://github.com/Apelsinka365)
-
-Maintained by [Andy Reiu].
