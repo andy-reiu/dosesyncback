@@ -61,13 +61,15 @@ spring.datasource.password=yourpassword
 
 🚀 Roadmap
 
-- Enhance authentication and authorization mechanisms (JWT)  
+- Enhance authentication and authorization mechanisms (JWT)
+- Backend validation
+- Unit tests and H2 tests
 - Add additional user roles with customized permissions  
-- Implement a notification system to remind staff about scheduled injections  
+- Implement a notification system to remind staff about scheduled injections
+- Add comments between doctor and technician
 - Develop a frontend application for easier interaction with the backend  
-- Improve dose calculation algorithms for increased accuracy  
-- Add detailed audit logging and activity tracking  
-- Optimize performance for handling larger hospital datasets
+- Improve dose calculation algorithm for better accuracy  
+- Add audit logging and activity tracking
 
 ## 👤 Authors
 
