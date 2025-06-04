@@ -59,7 +59,6 @@ public class ProfileService {
     public ProfileUpdateInfo getCurrentUserProfile(Integer profileId) {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileId));
-
         ProfileUpdateInfo profileUpdateInfo = profileMapper.toProfileUpdateInfo(profile);
         Optional<UserImage> userImage = userImageRepository.findUserImageBy(profileId);
         if (userImage.isPresent()) {
@@ -69,7 +68,6 @@ public class ProfileService {
         } else {
             profileUpdateInfo.setImageData(null);
         }
-
         return profileUpdateInfo;
     }
 
@@ -77,7 +75,6 @@ public class ProfileService {
     public void updateProfile(ProfileUpdateInfo profileUpdateInfo) {
         Profile profile = profileRepository.findById(profileUpdateInfo.getProfileId())
                 .orElseThrow(() -> new ForeignKeyNotFoundException("profileId", profileUpdateInfo.getProfileId()));
-
         if(profileUpdateInfo.getEmail() != null && !profileUpdateInfo.getEmail().equals(profile.getEmail())){
             profile.setEmail(profileUpdateInfo.getEmail());
         }
@@ -85,43 +82,32 @@ public class ProfileService {
         if (profileUpdateInfo.getPhoneNumber() != null && !profileUpdateInfo.getPhoneNumber().equals(profile.getPhoneNumber())) {
             profile.setPhoneNumber((profileUpdateInfo.getPhoneNumber()));
         }
-
         if (profileUpdateInfo.getOldPassword() != null && profileUpdateInfo.getNewPassword() != null) {
             if(!profile.getUser().getPassword().equals(profileUpdateInfo.getOldPassword())){
                 profile.getUser().setPassword(profileUpdateInfo.getNewPassword());
             }
         }
-
         Optional<UserImage> userImage = userImageRepository.findUserImageBy(profile.getId());
         String newImageData;
-
         if (profileUpdateInfo.getImageData() != null) {
             newImageData = profileUpdateInfo.getImageData().trim();
         } else {
             newImageData = null;
         }
-
         boolean clientSentNoImage = newImageData.isEmpty();
         boolean storedImageExists = userImage.isPresent();
-
         if (storedImageExists && clientSentNoImage) {
-
             userImageRepository.deleteUserImageBy(profile);
-
         } else if (storedImageExists && !clientSentNoImage) {
-
             UserImage toUpdate = userImage.get();
             byte[] raw = ImageConverter.stringToBytes(newImageData);
             toUpdate.setData(raw);
             userImageRepository.save(toUpdate);
-
         } else if (!storedImageExists && !clientSentNoImage) {
-
             UserImage newImage = userImageMapper.toUserImage(profileUpdateInfo);
             newImage.setProfile(profile);
             userImageRepository.save(newImage);
         }
-
         profileRepository.save(profile);
     }
 
