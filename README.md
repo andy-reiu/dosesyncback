@@ -1,16 +1,20 @@
 ☢️ DoseSync – Backend v1
 
+![HomeView](https://github.com/user-attachments/assets/0168bd82-bac0-47ab-bf3f-b5cfeff6674e)
 Planning of the patients in the Nuclear Department for better treatment and cost.
 It allows one to plan today's or week's schedule - when to inject, how much to inject, and see how much remains after injection.
 It also has calculations to improve the amount that can be injected.
 
+![AdminView](https://github.com/user-attachments/assets/8b430a67-bddf-4925-9b6c-317ca2348c42)
 There are user management, profile, and admin settings for calculation, hospital, and isotope management.
 Additionally, DoseSync provides user management with two roles:  
 - **Admins** (Doctors or Physicists) who can create and modify plans  
 - **Technicians** who can view results only
 Information then can be stored in the local database or saved as PDF.
+[2025-06-03.FPyl study-29.pdf](https://github.com/user-attachments/files/20592176/2025-06-03.FPyl.study-29.pdf)
 
 ----------------------------------------------------------------------------
+
 DoseSync includes a separate frontend application for managing schedules, dose planning, and user roles.
 The frontend communicates with this backend via REST APIs, repository is available at:  
 `https://github.com/andy-reiu/dosesyncfront`
